@@ -1,4 +1,5 @@
 import * as Types from '../actions/MovieActionTypes';
+import {l} from "../../utils/GGGGGGG";
 
 const initialState = {
   isFetchingFeatured: false,
@@ -18,11 +19,16 @@ export default function movies(state = initialState, action) {
         isFetching: true
       };
     case Types.MOVIES_FEATURED_GET_SUCCESS:
+
+      l("getFeaturedMoviesSuccess333333!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",action.response)
+      let ggggggg=action.response.map((item) => {
+        return item.data;
+      });
       return  {
         ...state,
         isFetchingFeatured: false,
         isFetching: getIsFetching(false),
-        featured: action.response
+        featured: ggggggg
       };
     case Types.MOVIES_BY_GENRES_GET_REQUEST:
       return  {

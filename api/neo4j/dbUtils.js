@@ -6,7 +6,7 @@ const nconf = require('../config');
 const neo4j = require('neo4j-driver');
 const {l} = require("../utilsss/cccccc");
 
-l("1neo4j is ", neo4j)
+// l("1neo4j is ", neo4j)
 const driver = neo4j.driver(
     nconf.get('neo4j-local'),
     neo4j.auth.basic(
@@ -14,7 +14,7 @@ const driver = neo4j.driver(
         nconf.get('PASSWORD')
     )
 );
-l("2neo4j driver is ", driver)
+// l("2neo4j driver is ", driver)
 exports.getSession = function (context) {
     if (context.neo4jSession) {
         return context.neo4jSession;

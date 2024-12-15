@@ -1,4 +1,5 @@
 import * as Types from './MovieActionTypes';
+import {l} from "../../utils/GGGGGGG";
 
 export function clearMovie() {
   return {type: Types.MOVIE_DETAIL_CLEAR};
@@ -33,6 +34,8 @@ export function getFeaturedMovies() {
 }
 
 export function getFeaturedMoviesSuccess(response) {
+
+  l("getFeaturedMoviesSuccess!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",response)
   return {type: Types.MOVIES_FEATURED_GET_SUCCESS, response};
 }
 

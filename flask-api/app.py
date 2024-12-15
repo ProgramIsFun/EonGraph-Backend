@@ -96,6 +96,8 @@ def set_user(sender, **extra):
     except (KeyError, TypeError):
         abort(401, 'invalid authorization key')
     return
+
+
 request_started.connect(set_user, app)
 
 
@@ -106,6 +108,7 @@ def login_required(f):
         if not auth_header:
             return {'message': 'no authorization provided'}, 401
         return f(*args, **kwargs)
+
     return wrapped
 
 
@@ -261,6 +264,7 @@ class GenreList(Resource):
     def get(self):
         def get_genres(tx):
             return list(tx.run('MATCH (genre:Genre) SET genre.id=id(genre) RETURN genre'))
+
         db = get_db()
         result = db.write_transaction(get_genres)
         return [serialize_genre(record['genre']) for record in result]
@@ -297,7 +301,7 @@ class Movie(Resource):
             },
         }
     })
-    def get(self,id):
+    def get(self, id):
         def get_movie(tx, user_id, id):
             return list(tx.run(
                 '''
@@ -321,8 +325,9 @@ class Movie(Resource):
                 collect(DISTINCT{ name:a.name, id:a.tmdbId, poster_image:a.poster, role:r.role}) AS actors,
                 collect(DISTINCT related) AS related,
                 collect(DISTINCT genre) AS genres
-                ''', {'user_id': user_id , 'id': id}
+                ''', {'user_id': user_id, 'id': id}
             ))
+
         db = get_db()
 
         result = db.read_transaction(get_movie, g.user['id'], id)
@@ -338,7 +343,7 @@ class Movie(Resource):
                 'poster_image': record['movie']['poster'],
                 'my_rating': record['my_rating'],
                 'genres': [serialize_genre(genre) for genre in record['genres']],
-                'directors': [serialize_person(director)for director in record['directors']],
+                'directors': [serialize_person(director) for director in record['directors']],
                 'producers': [serialize_person(producer) for producer in record['producers']],
                 'writers': [serialize_person(writer) for writer in record['writers']],
                 'actors': [
@@ -376,6 +381,7 @@ class MovieList(Resource):
                 MATCH (movie:Movie) RETURN movie
                 '''
             ))
+
         db = get_db()
         result = db.read_transaction(get_movies)
         return [serialize_movie(record['movie']) for record in result]
@@ -416,9 +422,11 @@ class MovieListByGenre(Resource):
                 RETURN movie
                 ''', {'genre_id': genre_id}
             ))
+
         db = get_db()
         result = db.read_transaction(get_movies_by_genre, genre_id)
         return [serialize_movie(record['movie']) for record in result]
+
 
 # Not sure this is useful anymore
 class MovieListByDateRange(Resource):
@@ -504,6 +512,7 @@ class MovieListByPersonActedIn(Resource):
                 RETURN DISTINCT movie
                 ''', {'person_id': person_id}
             ))
+
         db = get_db()
         result = db.read_transaction(get_movies_by_acted_in, person_id)
         return [serialize_movie(record['movie']) for record in result]
@@ -541,6 +550,7 @@ class MovieListByWrittenBy(Resource):
                 RETURN DISTINCT movie
                 ''', {'person_id': person_id}
             ))
+
         db = get_db()
         result = db.read_transaction(get_movies_list_written_by, person_id)
         return [serialize_movie(record['movie']) for record in result]
@@ -578,6 +588,7 @@ class MovieListByDirectedBy(Resource):
                 RETURN DISTINCT movie
                 ''', {'person_id': person_id}
             ))
+
         db = get_db()
         result = db.read_transaction(get_mmovies_list_directed_by, person_id)
         return [serialize_movie(record['movie']) for record in result]
@@ -616,6 +627,7 @@ class MovieListRatedByMe(Resource):
                 RETURN DISTINCT movie, rated.rating as my_rating
                 ''', {'user_id': user_id}
             ))
+
         db = get_db()
         result = db.read_transaction(get_movies_rated_by_me, g.user['id'])
         return [serialize_movie(record['movie'], record['my_rating']) for record in result]
@@ -663,9 +675,11 @@ class MovieListRecommended(Resource):
                 LIMIT 25
                 ''', {'user_id': user_id}
             ))
+
         db = get_db()
         result = db.read_transaction(get_movies_list_recommended, g.user['id'])
         return [serialize_movie(record['movie']) for record in result]
+
 
 class Person(Resource):
     @swagger.doc({
@@ -709,6 +723,7 @@ class Person(Resource):
                 collect(DISTINCT{ name:relatedPerson.name, id:relatedPerson.tmdbId, poster_image:relatedPerson.poster, role:relatedRole.role}) AS related
                 ''', {'id': user_id}
             ))
+
         db = get_db()
         results = db.read_transaction(get_person_by_id, id)
         for record in results:
@@ -779,6 +794,7 @@ class PersonList(Resource):
                 MATCH (person:Person) RETURN person
                 '''
             ))
+
         db = get_db()
         results = db.read_transaction(get_persons_list)
         return [serialize_person(record['person']) for record in results]
@@ -818,6 +834,7 @@ class PersonBacon(Resource):
     def get(self):
         name1 = request.args['name1']
         name2 = request.args['name2']
+
         def get_bacon(tx, name1, name2):
             return list(tx.run(
                 '''
@@ -827,6 +844,7 @@ class PersonBacon(Resource):
                 RETURN DISTINCT person
                 ''', {'name1': name1, 'name2': name2}
             ))
+
         db = get_db()
         results = db.read_transaction(get_bacon, name1, name2)
         return [serialize_person(record['person']) for record in results]
@@ -1036,7 +1054,8 @@ class RateMovie(Resource):
     @login_required
     def post(self, id):
         parser = reqparse.RequestParser()
-        parser.add_argument('rating', choices=list(range(0, 6)), type=int, required=True, help='A rating from 0 - 5 inclusive (integers)')
+        parser.add_argument('rating', choices=list(range(0, 6)), type=int, required=True,
+                            help='A rating from 0 - 5 inclusive (integers)')
         args = parser.parse_args()
         rating = args['rating']
 
@@ -1090,6 +1109,7 @@ class RateMovie(Resource):
                 MATCH (u:User {id: $user_id})-[r:RATED]->(m:Movie {tmdbId: $movie_id}) DELETE r
                 ''', {'movie_id': movie_id, 'user_id': user_id}
             )
+
         db = get_db()
         db.write_transaction(delete_rating, g.user['id'], id)
         return {}, 204
