@@ -29,7 +29,7 @@ app.use(nconf.get("api_path"), api);
 
 var swaggerDefinition = {
     info: {
-        title: "Neo4j Movie Demo API (Node/Express)",
+        title: "Neo4j Movie Demo API11111111111111111111111 (Node/Express)",
         version: "1.0.0",
         description: "",
     },
@@ -82,8 +82,19 @@ api.use(neo4jSessionCleanup);
 //api routes
 api.post("/register", routes.users.register);
 api.post("/login", routes.users.login);
+
+
+
+
 api.get("/users/me", routes.users.me);
+
+
+api.get("/returneverynode123333", routes.nodes789.list);
+
 api.get("/movies", routes.movies.list);
+
+
+
 api.get("/movies/recommended", routes.movies.getRecommendedMovies);
 api.get("/movies/rated", routes.movies.findMoviesRatedByMe);
 api.get("/movies/:id", routes.movies.findById);

@@ -56,7 +56,7 @@ class Home extends React.Component {
 
                                 <Link to={`/movie/${f.id}`}>
                                     {f.poster_image}
-                                    
+
                                     <img src={f.poster_image} alt=""/>
                                 </Link>
                             </li>

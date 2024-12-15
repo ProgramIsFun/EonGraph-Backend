@@ -26,19 +26,25 @@ nconf.env(['PORT', 'NODE_ENV'])
         }
     })
     .defaults({
-        'USERNAME': 'neo4j',
-        'PASSWORD': 'violation-endeavor-swab',
 
-        'neo4j-local':
-            'bolt://44.204.67.175:7687'
-        ,
-        //
+
+
         // 'USERNAME': 'neo4j',
-        // 'PASSWORD': 'B0QqyzMOAO86pdmKRCh-H6R_jzO_RWOAY2-ReiEIQgo',
+        // 'PASSWORD': 'violation-endeavor-swab',
         //
         // 'neo4j-local':
-        //     'neo4j+ssc://7dfcacd0.databases.neo4j.io'
+        //     'bolt://44.204.67.175:7687'
         // ,
+        //
+
+     
+
+        'USERNAME': 'neo4j',
+        'PASSWORD': 'B0QqyzMOAO86pdmKRCh-H6R_jzO_RWOAY2-ReiEIQgo',
+
+        'neo4j-local':
+            'neo4j+ssc://7dfcacd0.databases.neo4j.io'
+        ,
 
 
         'neo4j':
