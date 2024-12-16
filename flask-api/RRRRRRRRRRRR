@@ -1,0 +1,4 @@
+flask run -h localhost -p 3062
+
+
+localhost:3062
