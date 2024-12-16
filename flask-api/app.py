@@ -449,6 +449,7 @@ class MovieList2(Resource):
 
         oooo = {"nodes": nodes, "links": links}
         len(nodes)
+        return oooo
 
 
 class MovieList(Resource):
