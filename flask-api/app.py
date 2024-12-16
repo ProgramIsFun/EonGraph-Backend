@@ -206,6 +206,19 @@ def serialize_movie(movie, my_rating=None):
         'my_rating': my_rating,
     }
 
+def serialize_movie2(movie, my_rating=None):
+    return {
+        'id': movie['tmdbId'],
+        'title': movie['title'],
+        'summary': movie['plot'],
+        'released': movie['released'],
+        'duration': movie['runtime'],
+        'rated': movie['imdbRating'],
+        'tagline': movie['plot'],
+        'poster_image': movie['poster'],
+        'my_rating': my_rating,
+    }
+
 
 def serialize_person(person):
     return {
@@ -375,19 +388,67 @@ class MovieList2(Resource):
         }
     })
     def get(self):
-        def get_movies(tx):
-            return list(tx.run(
-                '''
-                MATCH (n) RETURN n
-                
-                '''
-            ))
-
         db = get_db()
-        result = db.read_transaction(get_movies)
-        return [serialize_movie(record['movie']) for record in result]
+        session = db
+        # get_all_node_and_their_connections
+        def get_all_node_and_their_connections(session):
+            result = session.run("MATCH (n)-[r]->(m) RETURN n, r, m")
+            return list(result)
+
+        k = session.execute_read(get_all_node_and_their_connections)
+        len(k)
+        k2 = k[0]
+        k2.keys()
+
+        k2["n"]
+        k2["m"].element_id
+        nodes = []
+        nodesid = {}
+        links = []
+        for i in k:
+            n = i["n"]
+            m = i["m"]
+            # p(n["element_id"])
+
+            if n.element_id not in nodesid:
+                nodesid[n.element_id] = 1
+                kkkk = dict(n)
+                kkkk["element_id"] = n.element_id
+                nodes.append(kkkk)
+            if m.element_id not in nodesid:
+                nodesid[m.element_id] = 1
+                kkkk = dict(m)
+                kkkk["element_id"] = m.element_id
+                nodes.append(kkkk)
+
+            links.append({"source": n.element_id, "target": m.element_id}
+                         )
+
+        len(nodes)
+        len(links)
+
+        # get_all_node_and_their_connections
+        def get_all_node_and_their_connections2(session):
+            result = session.run('''
+            MATCH (n)
+        WHERE NOT EXISTS ((n)--())
+        RETURN n
 
 
+            ''')
+            return list(result)
+
+        k = session.execute_read(get_all_node_and_their_connections2)
+        for i in k:
+            n = i["n"]
+            if n.element_id not in nodesid:
+                nodesid[n.element_id] = 1
+                kkkk = dict(n)
+                kkkk["element_id"] = n.element_id
+                nodes.append(kkkk)
+
+        oooo = {"nodes": nodes, "links": links}
+        len(nodes)
 
 
 class MovieList(Resource):
@@ -412,9 +473,12 @@ class MovieList(Resource):
                 MATCH (movie:Movie) RETURN movie
                 '''
             ))
-
         db = get_db()
         result = db.read_transaction(get_movies)
+
+
+
+
         return [serialize_movie(record['movie']) for record in result]
 
 
