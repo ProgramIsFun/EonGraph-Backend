@@ -372,7 +372,7 @@ class Movie(Resource):
 
 
 
-class MovieList2(Resource):
+class return_all_nodes111(Resource):
     @swagger.doc({
         'tags': ['movies'],
         'summary': 'Find all movies',
@@ -476,10 +476,6 @@ class MovieList(Resource):
             ))
         db = get_db()
         result = db.read_transaction(get_movies)
-
-
-
-
         return [serialize_movie(record['movie']) for record in result]
 
 
@@ -1078,7 +1074,7 @@ class Login(Resource):
             'token': user['api_key']
         }
 
-class Login2(Resource):
+class update_position_of_all_nodes111(Resource):
     @swagger.doc({
         'tags': ['users'],
         'summary': 'Login',
@@ -1308,7 +1304,7 @@ api.add_resource(Register, '/api/v0/register')
 
 api.add_resource(Login, '/api/v0/login')
 # 111111111111111111111111111111111111111
-api.add_resource(Login2, '/api/v0/update_position_of_all_nodes111')
+api.add_resource(update_position_of_all_nodes111, '/api/v0/update_position_of_all_nodes111')
 
 
 api.add_resource(UserMe, '/api/v0/users/me')
