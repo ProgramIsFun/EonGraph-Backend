@@ -19,6 +19,9 @@ from neo4j import GraphDatabase, basic_auth
 from neo4j.exceptions import Neo4jError
 import neo4j.time
 
+def p(*args):
+    print(args)
+
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)
@@ -396,38 +399,42 @@ class return_all_nodes111(Resource):
             return list(result)
 
         k = session.execute_read(get_all_node_and_their_connections)
-        len(k)
+        # len(k)
         k2 = k[0]
         k2.keys()
-
-        k2["n"]
-        k2["m"].element_id
         nodes = []
         nodesid = {}
         links = []
         for i in k:
             n = i["n"]
             m = i["m"]
-            # p(n["element_id"])
 
-            if n.element_id not in nodesid:
-                nodesid[n.element_id] = 1
+            NID = dict(n)["user_generate_id_7577777777"]
+            Ninternal_id = n.element_id
+            MID = dict(m)["user_generate_id_7577777777"]
+            Minternal_id = m.element_id
+            if NID not in nodesid:
+                nodesid[NID] = 1
                 kkkk = dict(n)
-                kkkk["element_id"] = n.element_id
+                # kkkk["element_id"]=n.element_id
                 nodes.append(kkkk)
-            if m.element_id not in nodesid:
-                nodesid[m.element_id] = 1
+            if MID not in nodesid:
+                nodesid[MID] = 1
                 kkkk = dict(m)
-                kkkk["element_id"] = m.element_id
+                # kkkk["element_id"]=m.element_id
                 nodes.append(kkkk)
 
-            links.append({"source": n.element_id, "target": m.element_id}
+            links.append({"source":
+
+                              NID,
+                          "target":
+                              MID,
+                          }
                          )
 
-        len(nodes)
-        len(links)
+        p(len(nodes))
+        p(len(links))
 
-        # get_all_node_and_their_connections
         def get_all_node_and_their_connections2(session):
             result = session.run('''
             MATCH (n)
@@ -441,14 +448,17 @@ class return_all_nodes111(Resource):
         k = session.execute_read(get_all_node_and_their_connections2)
         for i in k:
             n = i["n"]
-            if n.element_id not in nodesid:
-                nodesid[n.element_id] = 1
+            NID = dict(n)["user_generate_id_7577777777"]
+
+            if NID not in nodesid:
+                nodesid[NID] = 1
                 kkkk = dict(n)
-                kkkk["element_id"] = n.element_id
+                # kkkk["element_id"]=n.element_id
                 nodes.append(kkkk)
 
         oooo = {"nodes": nodes, "links": links}
         len(nodes)
+        p("hiiiiiiiiii")
         return oooo
 
 
@@ -1107,34 +1117,41 @@ class update_position_of_all_nodes111(Resource):
     })
     def post(self):
         data = request.get_json()
-        username = data.get('username')
-        password = data.get('password')
-        if not username:
-            return {'username': 'This field is required.'}, 400
-        if not password:
-            return {'password': 'This field is required.'}, 400
 
-        def get_user_by_username(tx, username):
-            return tx.run(
-                '''
-                MATCH (user:User {username: $username}) RETURN user
-                ''', {'username': username}
-            ).single()
+        p(data)
 
-        db = get_db()
-        result = db.read_transaction(get_user_by_username, username)
-        try:
-            user = result['user']
-        except KeyError:
-            return {'username': 'username does not exist'}, 400
+        # Return correct code
+        return {'message': 'success'}, 200
 
-        expected_password = hash_password(user['username'], password)
-        if user['password'] != expected_password:
-            return {'password': 'wrong password'}, 400
-        return {
-            'token': user['api_key']
-        }
-
+        #
+        # username = data.get('username')
+        # password = data.get('password')
+        # if not username:
+        #     return {'username': 'This field is required.'}, 400
+        # if not password:
+        #     return {'password': 'This field is required.'}, 400
+        #
+        # def get_user_by_username(tx, username):
+        #     return tx.run(
+        #         '''
+        #         MATCH (user:User {username: $username}) RETURN user
+        #         ''', {'username': username}
+        #     ).single()
+        #
+        # db = get_db()
+        # result = db.read_transaction(get_user_by_username, username)
+        # try:
+        #     user = result['user']
+        # except KeyError:
+        #     return {'username': 'username does not exist'}, 400
+        #
+        # expected_password = hash_password(user['username'], password)
+        # if user['password'] != expected_password:
+        #     return {'password': 'wrong password'}, 400
+        # return {
+        #     'token': user['api_key']
+        # }
+        #
 
 
 
