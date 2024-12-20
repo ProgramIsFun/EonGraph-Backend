@@ -1078,6 +1078,69 @@ class Login(Resource):
             'token': user['api_key']
         }
 
+class Login2(Resource):
+    @swagger.doc({
+        'tags': ['users'],
+        'summary': 'Login',
+        'description': 'Login',
+        'parameters': [
+            {
+                'name': 'body',
+                'in': 'body',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'username': {
+                            'type': 'string',
+                        },
+                        'password': {
+                            'type': 'string',
+                        }
+                    }
+                }
+            },
+        ],
+        'responses': {
+            '200': {
+                'description': 'succesful login'
+            },
+            '400': {
+                'description': 'invalid credentials'
+            }
+        }
+    })
+    def post(self):
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        if not username:
+            return {'username': 'This field is required.'}, 400
+        if not password:
+            return {'password': 'This field is required.'}, 400
+
+        def get_user_by_username(tx, username):
+            return tx.run(
+                '''
+                MATCH (user:User {username: $username}) RETURN user
+                ''', {'username': username}
+            ).single()
+
+        db = get_db()
+        result = db.read_transaction(get_user_by_username, username)
+        try:
+            user = result['user']
+        except KeyError:
+            return {'username': 'username does not exist'}, 400
+
+        expected_password = hash_password(user['username'], password)
+        if user['password'] != expected_password:
+            return {'password': 'wrong password'}, 400
+        return {
+            'token': user['api_key']
+        }
+
+
+
 
 class UserMe(Resource):
     @swagger.doc({
@@ -1221,6 +1284,8 @@ api.add_resource(RateMovie, '/api/v0/movies/<string:id>/rate')
 
 
 api.add_resource(MovieList, '/api/v0/movies')
+
+# 111111111111111111111111111111111111111
 api.add_resource(MovieList2, '/api/v0/return_all_nodes111')
 
 
@@ -1236,8 +1301,16 @@ api.add_resource(MovieListRecommended, '/api/v0/movies/recommended')
 api.add_resource(Person, '/api/v0/people/<string:id>')
 api.add_resource(PersonList, '/api/v0/people')
 api.add_resource(PersonBacon, '/api/v0/people/bacon')
+
+
 api.add_resource(Register, '/api/v0/register')
+
+
 api.add_resource(Login, '/api/v0/login')
+# 111111111111111111111111111111111111111
+api.add_resource(Login2, '/api/v0/update_position_of_all_nodes111')
+
+
 api.add_resource(UserMe, '/api/v0/users/me')
 
 
