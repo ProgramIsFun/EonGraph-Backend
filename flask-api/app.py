@@ -1282,7 +1282,7 @@ api.add_resource(RateMovie, '/api/v0/movies/<string:id>/rate')
 api.add_resource(MovieList, '/api/v0/movies')
 
 # 111111111111111111111111111111111111111
-api.add_resource(MovieList2, '/api/v0/return_all_nodes111')
+api.add_resource(return_all_nodes111, '/api/v0/return_all_nodes111')
 
 
 
