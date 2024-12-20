@@ -1115,11 +1115,16 @@ class update_position_of_all_nodes111(Resource):
             }
         }
     })
+
+
     def post(self):
         data = request.get_json()
 
         p(data)
-
+        # Writing JSON data
+        import json
+        with open('data1111111111.json', 'w') as file:
+            json.dump(data, file)
         # Return correct code
         return {'message': 'success'}, 200
 
