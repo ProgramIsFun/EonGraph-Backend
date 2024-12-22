@@ -1120,43 +1120,63 @@ class update_position_of_all_nodes111(Resource):
     def post(self):
         data = request.get_json()
 
-        p(data)
-        # Writing JSON data
-        import json
-        with open('data1111111111.json', 'w') as file:
-            json.dump(data, file)
-        # Return correct code
-        return {'message': 'success'}, 200
+        # p(data)
+        db = get_db()
+        from .kkkkkk import update_position_of_all_node_772
 
+        ppppp=update_position_of_all_node_772(db, data)
+        p(len(ppppp))
+        # Writing JSON data
+        # import json
+        # with open('data1111111111.json', 'w') as file:
+        #     json.dump(data, file)
         #
-        # username = data.get('username')
-        # password = data.get('password')
-        # if not username:
-        #     return {'username': 'This field is required.'}, 400
-        # if not password:
-        #     return {'password': 'This field is required.'}, 400
-        #
-        # def get_user_by_username(tx, username):
-        #     return tx.run(
-        #         '''
-        #         MATCH (user:User {username: $username}) RETURN user
-        #         ''', {'username': username}
-        #     ).single()
-        #
-        # db = get_db()
-        # result = db.read_transaction(get_user_by_username, username)
-        # try:
-        #     user = result['user']
-        # except KeyError:
-        #     return {'username': 'username does not exist'}, 400
-        #
-        # expected_password = hash_password(user['username'], password)
-        # if user['password'] != expected_password:
-        #     return {'password': 'wrong password'}, 400
-        # return {
-        #     'token': user['api_key']
-        # }
-        #
+        # Return correct code
+
+        return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!'}, 200
+
+
+class create_no77777777(Resource):
+    @swagger.doc({
+        'tags': ['users'],
+        'summary': 'Login',
+        'description': 'Login',
+        'parameters': [
+            {
+                'name': 'body',
+                'in': 'body',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'username': {
+                            'type': 'string',
+                        },
+                        'password': {
+                            'type': 'string',
+                        }
+                    }
+                }
+            },
+        ],
+        'responses': {
+            '200': {
+                'description': 'succesful login'
+            },
+            '400': {
+                'description': 'invalid credentials'
+            }
+        }
+    })
+
+
+    def post(self):
+        data = request.get_json()
+
+        # p(data)
+        db = get_db()
+        from .kkkkkk import update_position_of_all_node_772
+
+        return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!'}, 200
 
 
 
@@ -1327,6 +1347,9 @@ api.add_resource(Register, '/api/v0/register')
 api.add_resource(Login, '/api/v0/login')
 # 111111111111111111111111111111111111111
 api.add_resource(update_position_of_all_nodes111, '/api/v0/update_position_of_all_nodes111')
+
+api.add_resource(create_no77777777, '/api/v0/create_node77777777')
+
 
 
 api.add_resource(UserMe, '/api/v0/users/me')
