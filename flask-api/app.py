@@ -170,6 +170,9 @@ class update_position_of_all_nodes111(Resource):
         return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!'}, 200
 
 
+file_path = 'example.txt'
+
+
 class create_no77777777(Resource):
 
     def post(self):
@@ -179,14 +182,35 @@ class create_no77777777(Resource):
         p(data)
         n=data['name']
         db = get_db()
-        from .kkkkkk import create_note_with_generate_id
 
-        ppppp=create_note_with_generate_id(db, n)
+        # ue_location_X
+        x=data['locationX']
+        y=data['locationY']
+        z=data['locationZ']
+        if 1:
+            from .kkkkkk import create_note_with_generate_id_and_position
+            ppppp1=create_note_with_generate_id_and_position(db, n, x, y, z)
 
-        return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!',
+            # Open the file in append mode and write the string
+            with open(file_path, 'a') as file:
+                file.write(ppppp1)
 
-                'id': ppppp['id']
+            ppppp={
+                "id": ppppp1,
+                "name": n
 
+            }
+        else:
+            ppppp1=str(uuid.uuid4())
+            ppppp={
+                "id": ppppp1,
+                "name": n
+            }
+
+        return {'message': 'qqqqqqqqqqqqqq',
+            'messag111e': 'success!!!!!!!!!!!!!!!!!!!!!!!!!',
+                'id': ppppp['id'],
+                'name': ppppp['name']
                 }, 200
 
 

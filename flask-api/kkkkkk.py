@@ -1,3 +1,5 @@
+import uuid
+
 p=print
 
 def update_position_of_all_node_772(session,d):
@@ -120,6 +122,23 @@ def create_node_tx(tx, name, id8):
 
 def create_note_with_generate_id(session, name):
     node_id = session.execute_write(create_node_tx, name, str(uuid.uuid4()))
+    return node_id
+
+
+def create_node_tx_with_position(tx, name, id8, x, y, z):
+    query = ("CREATE (n:normalNode588888888 {"
+             "name: $name, "
+             "user_generate_id_7577777777: $id8, "
+             "ue_location_X: $x, "
+             "ue_location_Y: $y, "
+             "ue_location_Z: $z}) "
+             "RETURN n.user_generate_id_7577777777 AS node_id")
+    result = tx.run(query, name=name, id8=id8, x=x, y=y, z=z)
+    record = result.single()
+    return record["node_id"]
+
+def create_note_with_generate_id_and_position(session, name, x, y, z):
+    node_id = session.execute_write(create_node_tx_with_position, name, str(uuid.uuid4()), x, y, z)
     return node_id
 
 
