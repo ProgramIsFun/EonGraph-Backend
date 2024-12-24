@@ -1,3 +1,5 @@
+p=print
+
 def update_position_of_all_node_772(session,d):
 
 
@@ -34,6 +36,78 @@ def update_position_of_all_node_772(session,d):
     #
     # for i in updated_nodes:
     #     p(i)
+
+def get_all_node_and_their_connections13(session):
+    # get_all_node_and_their_connections
+    def get_all_node_and_their_connections(session):
+        result = session.run("MATCH (n)-[r]->(m) RETURN n, r, m")
+        return list(result)
+
+    k= session.execute_read(get_all_node_and_their_connections)
+    len(k)
+    k2=k[0]
+    k2.keys()
+    nodes=[]
+    nodesid={}
+    links=[]
+    for i in k:
+        n=i["n"]
+        m=i["m"]
+
+        NID=dict(n)["user_generate_id_7577777777"]
+        Ninternal_id=n.element_id
+        MID=dict(m)["user_generate_id_7577777777"]
+        Minternal_id=m.element_id
+        if NID not in nodesid:
+            nodesid[NID]=1
+            kkkk=dict(n)
+            # kkkk["element_id"]=n.element_id
+            nodes.append(kkkk)
+        if MID not in nodesid:
+            nodesid[MID]=1
+            kkkk=dict(m)
+            # kkkk["element_id"]=m.element_id
+            nodes.append(kkkk)
+
+        links.append({"source":
+
+                          NID,
+                      "target":
+                            MID,
+                      }
+                        )
+
+
+    p(len(nodes))
+    p(len(links))
+
+    def get_all_node_and_their_connections2(session):
+        result = session.run('''
+        MATCH (n)
+    WHERE NOT EXISTS ((n)--())
+    RETURN n
+
+
+        ''')
+        return list(result)
+
+    k=session.execute_read(get_all_node_and_their_connections2)
+    for i in k:
+        n=i["n"]
+        NID=dict(n)["user_generate_id_7577777777"]
+
+        if NID not in nodesid:
+            nodesid[NID]=1
+            kkkk=dict(n)
+            # kkkk["element_id"]=n.element_id
+            nodes.append(kkkk)
+
+    oooo={"nodes":nodes, "links":links}
+    len(nodes)
+    return oooo
+
+
+
 
 def create_node_tx(tx, name, id8):
     query = ("CREATE (n:normalNode588888888 {"
