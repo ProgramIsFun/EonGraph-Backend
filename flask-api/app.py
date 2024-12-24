@@ -190,6 +190,24 @@ class create_no77777777(Resource):
                 }, 200
 
 
+class delete_node(Resource):
+
+    def post(self):
+        data = request.get_json()
+
+        p('delete_node')
+        p(data)
+        n=data['id']
+        db = get_db()
+        from .kkkkkk import delete_node
+
+        ppppp=delete_node(db, n)
+
+        return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!',
+
+                'id': ppppp['id']
+
+                }, 200
 
 api.add_resource(ApiDocs, '/docs', '/docs/<path:path>')
 
@@ -201,7 +219,7 @@ api.add_resource(return_all_nodes111, '/api/v0/return_all_nodes111')
 api.add_resource(update_position_of_all_nodes111, '/api/v0/update_position_of_all_nodes111')
 
 api.add_resource(create_no77777777, '/api/v0/create_node77777777')
-
+api.add_resource(delete_node, '/api/v0/delete_node')
 
 # 1/0
 # api.add_resource(UserMe, '/api/v0/users/me')
