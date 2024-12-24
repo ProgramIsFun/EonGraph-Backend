@@ -34,3 +34,18 @@ def update_position_of_all_node_772(session,d):
     #
     # for i in updated_nodes:
     #     p(i)
+
+def create_node_tx(tx, name, id8):
+    query = ("CREATE (n:normalNode588888888 {"
+             "name: $name, "
+             "user_generate_id_7577777777:$id8 }) "
+             "RETURN n.user_generate_id_7577777777 AS node_id")
+    result = tx.run(query, name=name, id8=id8)
+    record = result.single()
+    return record["node_id"]
+
+def create_note_with_generate_id(session, name):
+    node_id = session.execute_write(create_node_tx, name, str(uuid.uuid4()))
+    return node_id
+
+
