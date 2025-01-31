@@ -1,3 +1,6 @@
+i have modified the original sample to match my the requirement of my application.
+
+
 # README
 
 This Neo4j-based example app displays movie and person data in a manner similar to IMDB.
