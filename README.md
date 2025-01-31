@@ -1,4 +1,5 @@
 i have modified the original sample to match my the requirement of my application.
+it originally come with a node JS back end sample and also a flask back end sample. I've choose to use the flask.
 
 
 # README
