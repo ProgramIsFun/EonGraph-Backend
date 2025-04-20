@@ -3,6 +3,9 @@ FLASK_ENV=development
 flask run -h localhost -p 3062 --debug
 
 
+
+use Python 3.13.0 (tags/v3.13.0:60403a5, Oct  7 2024, 09:38:07) [MSC v.1941 64 bit (AMD64)] on win32
+
 set FLASK_APP=app.py & set FLASK_ENV=development & set FLASK_DEBUG=1 & flask run -h localhost -p 3062
 
 localhost:3062
