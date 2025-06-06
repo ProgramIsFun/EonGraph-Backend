@@ -249,6 +249,20 @@ class delete_node(Resource):
 
                 }, 200
 
+
+class dddddddd(Resource):
+
+    def get(self):
+        
+
+        return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!',
+
+                }, 200
+
+api.add_resource(dddddddd, '/aa1')
+
+
+
 api.add_resource(ApiDocs, '/docs', '/docs/<path:path>')
 
 api.add_resource(return_all_nodes111, '/api/v0/return_all_nodes111')
