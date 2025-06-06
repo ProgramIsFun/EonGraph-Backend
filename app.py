@@ -19,6 +19,15 @@ from neo4j import GraphDatabase, basic_auth
 from neo4j.exceptions import Neo4jError
 import neo4j.time
 
+
+
+from kkkkkk import get_all_node_and_their_connections13
+from kkkkkk import update_position_of_all_node_772
+
+from kkkkkk import create_note_with_generate_id_and_position
+# from kkkkkk import delete_node
+
+
 def p(*args):
     print(args)
 
@@ -156,11 +165,16 @@ class ApiDocs(Resource):
 
 class return_all_nodes111(Resource):
     def get(self):
-        db = get_db()
-        session = db
-        from .kkkkkk import get_all_node_and_their_connections13
-        oooo=get_all_node_and_their_connections13(session)
-        return oooo
+
+        try:
+            db = get_db()
+            session = db
+            p("return_all_nodes1112222222222222222222222222222222222222222222222222222222222222")
+            oooo=get_all_node_and_their_connections13(session)
+            return oooo
+        except Exception as e:
+            p('Neo4jError:', e)
+            return {'message': 'Neo4jError occurred', 'error': str(e)}, 500
 
 
 
@@ -172,8 +186,7 @@ class update_position_of_all_nodes111(Resource):
 
         # p(data)
         db = get_db()
-        from .kkkkkk import update_position_of_all_node_772
-
+     
         ppppp=update_position_of_all_node_772(db, data)
         p(len(ppppp))
         # Writing JSON data
@@ -204,7 +217,8 @@ class create_no77777777(Resource):
         y=data['locationY']
         z=data['locationZ']
         if 1:
-            from .kkkkkk import create_note_with_generate_id_and_position
+
+            
             ppppp1=create_note_with_generate_id_and_position(db, n, x, y, z)
 
             # Open the file in append mode and write the string
@@ -230,7 +244,7 @@ class create_no77777777(Resource):
                 }, 200
 
 
-class delete_node(Resource):
+class delete_node1(Resource):
 
     def post(self):
         data = request.get_json()
@@ -239,13 +253,12 @@ class delete_node(Resource):
         p(data)
         n=data['id']
         db = get_db()
-        from .kkkkkk import delete_node
 
-        ppppp=delete_node(db, n)
+        # ppppp=delete_node(db, n)
 
         return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!',
 
-                'id': ppppp['id']
+                # 'id': ppppp['id']
 
                 }, 200
 
@@ -273,7 +286,7 @@ api.add_resource(return_all_nodes111, '/api/v0/return_all_nodes111')
 api.add_resource(update_position_of_all_nodes111, '/api/v0/update_position_of_all_nodes111')
 
 api.add_resource(create_no77777777, '/api/v0/create_node77777777')
-api.add_resource(delete_node, '/api/v0/delete_node')
+api.add_resource(delete_node1, '/api/v0/delete_node')
 
 # 1/0
 # api.add_resource(UserMe, '/api/v0/users/me')
