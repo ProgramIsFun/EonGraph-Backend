@@ -1,3 +1,6 @@
+This is deprecated because I want easiness of deploying to azure.  Please use this branch instead [https://github.com/ProgramIsFun/graphPythonBackend11
+](https://github.com/ProgramIsFun/graphPythonBackend11/tree/main2)
+
 i have modified the original sample https://github.com/neo4j-examples/neo4j-movies-template to match my the requirement of my application.
 it originally come with a node JS back end sample and also a flask back end sample. I've choose to use the flask.
 
