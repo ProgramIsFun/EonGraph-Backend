@@ -4,8 +4,6 @@ p=print
 
 def update_position_of_all_node_772(session,d):
 
-
-
     output_data = []
 
     for item in d:
