@@ -143,11 +143,10 @@ class get_all_node_and_their_connections(Resource):
             
             # p(db)
             session = db
-            p("return_all_nodes1112222222222222222222222222222222222222222222222222222222222222")
             oooo=get_all_node_and_their_connections13(session)
             return oooo
         except Exception as e:
-            p('Error111111111111111111111111111:', e)
+            p('Error occurred while fetching nodes and connections:', str(e))
             return {'message': 'Error occurred', 'error': str(e)}, 500
 
 
@@ -170,9 +169,7 @@ class update_position_of_all_nodes(Resource):
             with open('data1111111111.json', 'w') as file:
                 json.dump(data, file)
 
-        # Return correct code
-
-        return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!'}, 200
+        return {'message': 'success!'}, 200
 
 
 file_path = 'example.txt'
@@ -214,7 +211,7 @@ class create_node(Resource):
             }
 
         return {'message': 'qqqqqqqqqqqqqq',
-            'messag111e': 'success!!!!!!!!!!!!!!!!!!!!!!!!!',
+            'messag111e': 'success!',
                 'id': ppppp['id'],
                 'name': ppppp['name']
                 }, 200
