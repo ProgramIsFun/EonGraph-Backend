@@ -266,11 +266,6 @@ api.add_resource(delete_node1, '/api/v0/delete_node')
 
 
 
-
-
-
-
-
 from flask import render_template
 
 @app.route('/aaaaaaaaa')
