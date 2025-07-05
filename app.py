@@ -15,13 +15,14 @@ from flask_restful_swagger_2 import Api, swagger, Schema
 from flask_json import FlaskJSON, json_response
 from neo4j import GraphDatabase, basic_auth
 
-
 from kkkkkk import get_all_node_and_their_connections13
 from kkkkkk import update_position_of_all_node_772
 from kkkkkk import create_note_with_generate_id_and_position
 
+
 def p(*args):
     print(args)
+
 
 load_dotenv(find_dotenv())
 
@@ -54,31 +55,20 @@ def env(key, default=None, required=True):
         raise RuntimeError("Missing required environment variable '%s'" % key)
 
 
-NEO4J_URI='neo4j+ssc://806970c7.databases.neo4j.io'
-NEO4J_USERNAME='neo4j'
-NEO4J_PASSWORD="ntVYbR1v-6OrHleeKhs7WC22VRXmpM7fPbhNddc3QRw"
-NEO4J_DATABASE="neo4j"
+NEO4J_URI = 'neo4j+ssc://806970c7.databases.neo4j.io'
+NEO4J_USERNAME = 'neo4j'
+NEO4J_PASSWORD = "ntVYbR1v-6OrHleeKhs7WC22VRXmpM7fPbhNddc3QRw"
+NEO4J_DATABASE = "neo4j"
 
-
-
-
-
-SECRET_KEY="super secret guy"
-MOVIE_DATABASE_USERNAME= NEO4J_USERNAME
-MOVIE_DATABASE_PASSWORD= NEO4J_PASSWORD
-MOVIE_DATABASE_URL= NEO4J_URI
-
+SECRET_KEY = "super secret guy"
+MOVIE_DATABASE_USERNAME = NEO4J_USERNAME
+MOVIE_DATABASE_PASSWORD = NEO4J_PASSWORD
+MOVIE_DATABASE_URL = NEO4J_URI
 
 DATABASE_USERNAME = MOVIE_DATABASE_USERNAME
 DATABASE_PASSWORD = MOVIE_DATABASE_PASSWORD
 DATABASE_URL = MOVIE_DATABASE_URL
 app.config['SECRET_KEY'] = SECRET_KEY
-
-
-
-
-
-
 
 driver = GraphDatabase.driver(DATABASE_URL, auth=basic_auth(DATABASE_USERNAME, str(DATABASE_PASSWORD)))
 
@@ -125,13 +115,11 @@ def set_user(sender, **extra):
 request_started.connect(set_user, app)
 
 
-
 class ApiDocs(Resource):
     def get(self, path=None):
         if not path:
             path = 'index.html'
         return send_from_directory('swaggerui', path)
-
 
 
 class get_all_node_and_their_connections(Resource):
@@ -140,16 +128,14 @@ class get_all_node_and_their_connections(Resource):
         try:
             p("get_all_node_and_their_connections")
             db = get_db()
-            
+
             # p(db)
             session = db
-            oooo=get_all_node_and_their_connections13(session)
+            oooo = get_all_node_and_their_connections13(session)
             return oooo
         except Exception as e:
             p('Error occurred while fetching nodes and connections:', str(e))
             return {'message': 'Error occurred', 'error': str(e)}, 500
-
-
 
 
 class update_position_of_all_nodes(Resource):
@@ -159,11 +145,11 @@ class update_position_of_all_nodes(Resource):
 
         # p(data)
         db = get_db()
-     
-        ppppp=update_position_of_all_node_772(db, data)
+
+        ppppp = update_position_of_all_node_772(db, data)
         p(len(ppppp))
         # Writing JSON data
-        save= 0
+        save = 0
         if save:
             import json
             with open('data1111111111.json', 'w') as file:
@@ -182,36 +168,35 @@ class create_node(Resource):
 
         p('create_no77777777')
         p(data)
-        n=data['name']
+        n = data['name']
         db = get_db()
 
         # ue_location_X
-        x=data['locationX']
-        y=data['locationY']
-        z=data['locationZ']
+        x = data['locationX']
+        y = data['locationY']
+        z = data['locationZ']
         if 1:
 
-            
-            ppppp1=create_note_with_generate_id_and_position(db, n, x, y, z)
+            ppppp1 = create_note_with_generate_id_and_position(db, n, x, y, z)
 
             # Open the file in append mode and write the string
             with open(file_path, 'a') as file:
                 file.write(ppppp1)
 
-            ppppp={
+            ppppp = {
                 "id": ppppp1,
                 "name": n
 
             }
         else:
-            ppppp1=str(uuid.uuid4())
-            ppppp={
+            ppppp1 = str(uuid.uuid4())
+            ppppp = {
                 "id": ppppp1,
                 "name": n
             }
 
         return {'message': 'qqqqqqqqqqqqqq',
-            'messag111e': 'success!',
+                'messag111e': 'success!',
                 'id': ppppp['id'],
                 'name': ppppp['name']
                 }, 200
@@ -224,7 +209,7 @@ class delete_node(Resource):
 
         p('delete_node')
         p(data)
-        n=data['id']
+        n = data['id']
         db = get_db()
 
         # ppppp=delete_node(db, n)
@@ -236,7 +221,6 @@ class delete_node(Resource):
                 }, 200
 
 
-
 class health(Resource):
     def get(self):
         return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!',
@@ -244,8 +228,7 @@ class health(Resource):
                 }, 200
 
 
-
-# basic 
+# basic
 api.add_resource(health, '/health')
 api.add_resource(ApiDocs, '/docs', '/docs/<path:path>')
 
@@ -257,14 +240,14 @@ api.add_resource(delete_node, '/api/v0/delete_node')
 # read
 api.add_resource(get_all_node_and_their_connections, '/api/v0/return_all_nodes111')
 
-
 from flask import render_template
+
 
 @app.route('/original')
 def index():
-   print('Request for index page received')
-   return render_template('index.html')
+    print('Request for index page received')
+    return render_template('index.html')
 
 
 if __name__ == '__main__':
-   app.run()
+    app.run()
