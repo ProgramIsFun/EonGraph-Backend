@@ -174,23 +174,23 @@ class create_node(Resource):
         x = data['locationX']
         y = data['locationY']
         z = data['locationZ']
-        if 1:
 
-            ppppp1 = create_note_with_generate_id_and_position(db, n, x, y, z)
 
-            save=0
-            if save:
+        ppppp1 = create_note_with_generate_id_and_position(db, n, x, y, z)
 
-                file_path = 'example.txt'
-                # Open the file in append mode and write the string
-                with open(file_path, 'a') as file:
-                    file.write(ppppp1)
+        save=0
+        if save:
 
-            ppppp = {
-                "id": ppppp1,
-                "name": n
+            file_path = 'example.txt'
+            # Open the file in append mode and write the string
+            with open(file_path, 'a') as file:
+                file.write(ppppp1)
 
-            }
+        ppppp = {
+            "id": ppppp1,
+            "name": n
+
+        }
 
         return {'message': 'qqqqqqqqqqqqqq',
                 'messag111e': 'success!',
