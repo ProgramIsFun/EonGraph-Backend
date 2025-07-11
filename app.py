@@ -128,13 +128,14 @@ class get_specific_node_with_specific_id1(Resource):
         return {}, 200
     def post(self):
         data = request.get_json()
-        p('get_specific_node_with_specific_id1')
+        p('get_specific_node_with_specific_id1', data)
         p(data)
-        node_id = data['id']
+        
+        node_id = data['nodeIdAccess']
         db = get_db()
 
-        oooo=get_specific_node_with_specific_id(db, node_id)
-
+        oooo=get_specific_node_with_specific_id( node_id)
+        p("oooo111", oooo)
         if not oooo:
             return {'message': 'Node not found'}, 404
 
