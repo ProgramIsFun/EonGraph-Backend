@@ -124,7 +124,10 @@ class ApiDocs(Resource):
 
 
 class get_specific_node_with_specific_id1(Resource):
-    def get(self):
+
+    def options(self):
+        return {}, 200
+    def post(self):
         data = request.get_json()
         p('get_specific_node_with_specific_id1')
         p(data)
