@@ -8,7 +8,7 @@ p=print
 import uuid
 
 
-# In[3]:
+# In[1]:
 
 
 from utillll import session
@@ -312,6 +312,32 @@ def update_position_of_all_node_772(session,d):
 #       }
 #     ]
 # a=update_position_of_all_node_772(session,d)
+
+
+# #### update_color_of_all_nodes
+# 
+# 
+
+# In[2]:
+
+
+def update_color_of_all_nodes(session, color):
+    # Implement the logic to update the color of all nodes in the database
+    query = '''
+    MATCH (n)
+    SET n.color = $color
+    RETURN n
+    '''
+    result = session.run(query, color=color)
+    return [record['n'] for record in result]
+
+
+# In[ ]:
+
+
+# a=update_color_of_all_nodes(session, "#FFFFFF")
+
+# a
 
 
 # ## Creating things.
