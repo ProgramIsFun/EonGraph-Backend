@@ -149,7 +149,7 @@ def api_create_node():
         "name": n
     }
     return {'message': 'qqqqqqqqqqqqqq',
-            'messag111e': 'success!',
+            'messag111e': 'success.',
             'id': ppppp['id'],
             'name': ppppp['name']
             }, 200
@@ -166,7 +166,7 @@ def api_update_colors():
     ppppp = update_color_of_all_nodes(db, data)
     p(len(ppppp))
     # Save JSON data if needed...
-    return {'message': 'success!'}, 200
+    return {'message': 'success.'}, 200
 
 @app.route('/api/v0/update_position_of_all_nodes111', methods=['POST'])
 def api_update_positions():
@@ -175,7 +175,7 @@ def api_update_positions():
     ppppp = update_position_of_all_node_772(db, data)
     p(len(ppppp))
     # Save JSON data if needed...
-    return {'message': 'success!'}, 200
+    return {'message': 'success.'}, 200
 
 # delete
 @app.route('/api/v0/delete_node', methods=['POST'])
