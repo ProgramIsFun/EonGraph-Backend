@@ -1,9 +1,8 @@
 
 # dev logs
 
-This branch is coming from https://github.com/ProgramIsFun/graphPythonBackend11/tree/master.  
-
-I basically take one folder of that branch and then make it azure compatible in this branch
+- This branch is coming from https://github.com/ProgramIsFun/graphPythonBackend11/tree/master.  I basically take one folder of that branch and then make it azure compatible in this branch
+- 14/8/25  https://github.com/ProgramIsFun/EonGraph-Backend/commit/37f857deae2675eb9153f7b508015466da0b752a  Changed the old library to normal flask
 
 # how to develop
 
