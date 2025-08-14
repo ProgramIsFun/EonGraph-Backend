@@ -29,8 +29,7 @@ https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask
 
 I suggest using vs code extension
 
-
-
+# below is the original readme from the original repo
 
 # Deploy a Python (Flask) web app to Azure App Service - Sample Application
 
