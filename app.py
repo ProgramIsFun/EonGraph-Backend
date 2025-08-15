@@ -7,9 +7,9 @@ from flask_cors import CORS
 from flask_json import FlaskJSON, json_response
 from neo4j import GraphDatabase, basic_auth
 
-from kkkkkk import get_all_node_and_their_connections13
-from kkkkkk import update_position_of_all_node_772
-from kkkkkk import create_note_with_generate_id_and_position
+from example import get_all_node_and_their_connections13
+from example import update_position_of_all_node_772
+from example import create_note_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
 
 def p(*args):
