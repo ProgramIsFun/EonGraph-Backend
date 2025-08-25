@@ -11,7 +11,7 @@ from example import get_all_node_and_their_connections13
 from example import update_position_of_all_node_772
 from example import create_note_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
-from example import get_github_repositories
+from example import get_github_repositories,clear_all_caches
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
 
 def p(*args):
@@ -188,6 +188,11 @@ def api_delete_node():
     # ppppp=delete_node(db, n)
     return {'message': 'ok, no problem'}, 200
 
+# clear_all_caches
+@app.route('/api/v0/clear_all_caches', methods=['POST'])
+def api_clear_all_caches():
+    deleted_count = clear_all_caches()
+    return {'message': f'Cleared {deleted_count} cache files.'}, 200
 
 if __name__ == '__main__':
     app.run()
