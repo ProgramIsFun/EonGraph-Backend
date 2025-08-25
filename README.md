@@ -8,19 +8,35 @@
 
 you modify ipynb files and then convert them to python files using nbconvert.
 
+1. 
+
 pip install nbconvert
+
+2.
+
 jupyter nbconvert example.ipynb --to python
 
 # how to run this code
 
+1. 
+
 Install a virtual environment possibly using the VS code
 
+2. 
+
 pip install -r requirements.txt
+
+3. 
 
 set FLASK_APP=app.py
 set FLASK_ENV=development
 
+4.
+
 flask run
+
+
+ref : 
 
 https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli
 
