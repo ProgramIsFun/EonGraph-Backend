@@ -11,7 +11,7 @@ from example import get_all_node_and_their_connections13
 from example import update_position_of_all_node_772
 from example import create_note_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
-from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
 
 def p(*args):
     print(args)
@@ -85,11 +85,11 @@ def set_user():
 # --- API ENDPOINTS ---
 
 
-
+# general
 
 @app.route('/health', methods=['GET'])
 def health():
-    return {"message": "ok, no problem"}, 200
+    return {"message": "ok, no problem, version 1.0.0"}, 200
 
 @app.route('/docs/<path:path>', methods=['GET'])
 @app.route('/docs', methods=['GET'])
@@ -102,7 +102,6 @@ def api_docs(path=None):
 def index():
     print('Request for index page received')
     return render_template('index.html')
-
 
 # read
 
@@ -130,12 +129,11 @@ def api_get_all_nodes():
         p('Error occurred while fetching nodes and connections:', str(e))
         return {'message': 'Error occurred', 'error': str(e)}, 500
 
-
 @app.route('/api/v0/get_all_github_repositories', methods=['GET'])
 def api_get_all_github_repositories():
     import requests
 
-    token = "YOUR_GITHUB_TOKEN"  # Replace with your personal access token
+    token = GITHUB_TOKEN
     url = "https://api.github.com/user/repos"
 
     headers = {
@@ -164,7 +162,6 @@ def api_get_all_github_repositories():
 
     return jsonify(repos), 200
 
-
 # create 
 
 @app.route('/api/v0/create_node77777777', methods=['POST'])
@@ -188,7 +185,6 @@ def api_create_node():
             }, 200
 
 # update
-
 
 @app.route('/api/v0/update_color_of_all_nodes', methods=['POST'])
 def api_update_colors():
