@@ -25,11 +25,21 @@ flask run
 https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli
 
 # how to deploy this code
-azure app service
+1. azure app service
 
 use website to create a free service 
 
-using vs code extension right click, deploy to this 
+2. deploy 
+
+using vs code extension right click on the created service, deploy to web app...
+
+3. to add env to service
+
+az config set core.enable_broker_on_windows=false
+
+az login 
+
+az webapp config appsettings set --name <AppServiceName> --resource-group <ResourceGroupName> --settings MY_VARIABLE=MyValue
 
 # below is the original readme from the original repo
 
