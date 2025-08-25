@@ -24,6 +24,8 @@ flask run
 
 https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli
 
+
+
 # how to deploy this code
 1. azure app service
 
@@ -40,6 +42,23 @@ az config set core.enable_broker_on_windows=false
 az login 
 
 az webapp config appsettings set --name <AppServiceName> --resource-group <ResourceGroupName> --settings MY_VARIABLE=MyValue
+
+
+# principles in neo4j
+
+It is recommended to use a user-generated ID in Neo4j for robust and portable node identification.
+
+should it named id?
+
+Short Answer:
+It’s better not to name your user-generated ID simply id. Instead, use a more descriptive property name (like userId, uuid, productId, etc.).
+
+Why Not Just id?
+Neo4j already has an internal node identifier that can be accessed using the id() function.
+Naming your property id can cause confusion, especially for new users or when reading Cypher queries.
+Explicit and descriptive naming helps maintain readability and prevents accidental mix-ups between your property and Neo4j’s built-in identifier.
+
+
 
 # below is the original readme from the original repo
 
