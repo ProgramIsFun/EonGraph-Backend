@@ -58,7 +58,10 @@ Neo4j already has an internal node identifier that can be accessed using the id(
 Naming your property id can cause confusion, especially for new users or when reading Cypher queries.
 Explicit and descriptive naming helps maintain readability and prevents accidental mix-ups between your property and Neo4j’s built-in identifier.
 
+So when writing the code, I assume some user-generated ID will be used. These are useful when editing the graph.
 
+MATCH (p:Person {user_id: 123}), (m:Movie {movie_id: 567})
+CREATE (p)-[:LIKES]->(m)
 
 # below is the original readme from the original repo
 
