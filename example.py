@@ -1,20 +1,106 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[3]:
 
 
 p=print
 import uuid
 
 
-# In[1]:
+# In[2]:
 
 
-from utillll import session
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
+
+AUTH = (NEO4J_USERNAME, NEO4J_PASSWORD)
+
+from neo4j import GraphDatabase
+
+driver_ = GraphDatabase.driver(NEO4J_URI, auth=AUTH)
+session = driver_.session(database=NEO4J_DATABASE)
+
+
+# In[8]:
+
+
+import os
+import json
+import time
+import hashlib
+
+def get_cache_filename(key: str, cache_dir='.', ext='json'):
+    """Generate filename from key (namespace for cache)."""
+    hashed = hashlib.sha256(key.encode('utf-8')).hexdigest()
+    return os.path.join(cache_dir, f'cache_{hashed}.{ext}')
+
+def load_cache_generic(key, expiry_seconds=600, cache_dir='.'):
+    """Load cache by key. Returns None if not found or expired."""
+    fn = get_cache_filename(key, cache_dir)
+    if not os.path.exists(fn):
+        return None
+    try:
+        with open(fn, 'r', encoding='utf-8') as f:
+            cache = json.load(f)
+    except Exception:
+        return None
+    if time.time() - cache.get('time', 0) > expiry_seconds:
+        return None
+    return cache['data']
+
+def save_cache_generic(key, data, cache_dir='.'):
+    """Save cache data with the given key."""
+    fn = get_cache_filename(key, cache_dir)
+    cache = {'time': time.time(), 'data': data}
+    with open(fn, 'w', encoding='utf-8') as f:
+        json.dump(cache, f)
 
 
 # ## Basic information.
+
+# #### get_github_repositories
+# 
+
+# In[ ]:
+
+
+import requests
+
+def get_github_repositories(cache_expiry=600):
+    CACHE_KEY = 'github_user_repos_v1'   # Can be made more specific e.g. by username
+    repos = load_cache_generic(CACHE_KEY, expiry_seconds=cache_expiry)
+    if repos is not None:
+        print("Loaded from cache")
+    else:
+        url = "https://api.github.com/user/repos"
+        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+        repos = []
+        page = 1
+        while True:
+            response = requests.get(url, headers=headers, params={'per_page': 100, 'page': page})
+            if response.status_code != 200:
+                print(f"Error {response.status_code}: {response.text}")
+                break
+            data = response.json()
+            if not data:
+                break
+            repos.extend(data)
+            page += 1
+        save_cache_generic(CACHE_KEY, repos)
+
+    # Markdown table output
+    print("| Name | Full Name | Private | HTML URL |")
+    print("|------|-----------|---------|----------|")
+    for repo in repos:
+        print(f"| {repo['name']} | {repo['full_name']} | {repo['private']} | {repo['html_url']} |")
+    return repos
+
+
+# In[12]:
+
+
+a=get_github_repositories()
+
 
 # #### get_specific_node_with_specific_id
 
