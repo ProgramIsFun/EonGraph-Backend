@@ -25,8 +25,11 @@ flask run
 https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli
 
 # how to deploy this code
+azure app service
 
-I suggest using vs code extension
+use website to create a free service 
+
+using vs code extension right click, deploy to this 
 
 # below is the original readme from the original repo
 
