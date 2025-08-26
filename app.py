@@ -8,7 +8,7 @@ from flask_json import FlaskJSON, json_response
 from neo4j import GraphDatabase, basic_auth
 
 from example import get_all_node_and_their_connections13
-from example import update_position_of_all_node_772
+from example import update_position_of_all_node
 from example import create_note_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
 from example import get_github_repositories,clear_all_caches,run_cypher_any
@@ -187,7 +187,7 @@ def api_update_colors():
 def api_update_positions():
     data = request.get_json()
     db = get_db()
-    ppppp = update_position_of_all_node_772(db, data)
+    ppppp = update_position_of_all_node(db, data)
     p(len(ppppp))
     # Save JSON data if needed...
     return {'message': 'success.'}, 200
