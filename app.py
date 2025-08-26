@@ -9,7 +9,7 @@ from neo4j import GraphDatabase, basic_auth
 
 from example import get_all_node_and_their_connections13
 from example import update_position_of_all_node
-from example import create_note_with_generate_id_and_position
+from example import create_node_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
 from example import get_github_repositories,clear_all_caches,run_cypher_any
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
@@ -161,7 +161,7 @@ def api_create_node():
     x = data['locationX']
     y = data['locationY']
     z = data['locationZ']
-    ppppp1 = create_note_with_generate_id_and_position(db, n, x, y, z)
+    ppppp1 = create_node_with_generate_id_and_position(db, n, x, y, z)
     ppppp = {
         "id": ppppp1,
         "name": n
