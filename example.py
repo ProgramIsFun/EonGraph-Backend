@@ -21,6 +21,9 @@ driver_ = GraphDatabase.driver(NEO4J_URI, auth=AUTH)
 session = driver_.session(database=NEO4J_DATABASE)
 
 
+# ## Helper Functions
+# 
+
 # In[ ]:
 
 
@@ -120,10 +123,10 @@ def get_github_repositories(cache_expiry=60000000000000):
     return repos
 
 
-# In[12]:
+# In[ ]:
 
 
-a=get_github_repositories()
+# a=get_github_repositories()
 
 
 # #### get_specific_node_with_specific_id
