@@ -120,7 +120,6 @@ def api_run_any_cypher():
 
 
 # read
-
 @app.route('/api/v0/get_specific_node_with_specific_id', methods=['POST', 'OPTIONS'])
 def api_get_specific_node():
     if request.method == 'OPTIONS':
@@ -167,8 +166,8 @@ def api_create_node():
         "id": ppppp1,
         "name": n
     }
-    return {'message': 'qqqqqqqqqqqqqq',
-            'messag111e': 'success.',
+    return {
+            'message': 'success.',
             'id': ppppp['id'],
             'name': ppppp['name']
             }, 200
