@@ -150,7 +150,7 @@ def api_get_all_nodes():
 def api_get_all_node_ids():
     db = get_db()
     application_ids = "user_generate_id_7577777777"
-    return jsonify(application_ids), 200
+    return jsonify({"id_ref",application_ids}), 200
 
 @app.route('/api/v0/get_all_github_repositories', methods=['GET'])
 def api_get_all_github_repositories():
