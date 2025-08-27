@@ -120,6 +120,7 @@ def api_run_any_cypher():
 
 
 # read
+
 @app.route('/api/v0/get_specific_node_with_specific_id', methods=['POST', 'OPTIONS'])
 def api_get_specific_node():
     if request.method == 'OPTIONS':
@@ -143,6 +144,13 @@ def api_get_all_nodes():
     except Exception as e:
         p('Error occurred while fetching nodes and connections:', str(e))
         return {'message': 'Error occurred', 'error': str(e)}, 500
+
+# get the id property that exist on all the node
+@app.route('/api/v0/get_all_node_ids', methods=['GET'])
+def api_get_all_node_ids():
+    db = get_db()
+    application_ids = "user_generate_id_7577777777"
+    return jsonify(application_ids), 200
 
 @app.route('/api/v0/get_all_github_repositories', methods=['GET'])
 def api_get_all_github_repositories():
