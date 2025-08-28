@@ -281,13 +281,13 @@ def get_every_node(tx):
 
 
 
-# #### get_all_node_and_their_connections13
+# #### get_all_node_and_their_connections_all
 
 # In[ ]:
 
 
-def get_all_node_and_their_connections13(session):
-    p("get_all_node_and_their_connections13 called")
+def get_all_node_and_their_connections_all(session):
+    p("get_all_node_and_their_connections_all called")
     def get_all_node_and_their_connections(session):
         result = session.run("MATCH (n)-[r]->(m) RETURN n, r, m")
         return list(result)
@@ -359,7 +359,7 @@ def get_all_node_and_their_connections13(session):
 # In[34]:
 
 
-# get_all_node_and_their_connections13(session)
+# get_all_node_and_their_connections_all(session)
 
 
 # In[ ]:
