@@ -8,7 +8,7 @@ p=print
 import uuid
 
 
-# In[3]:
+# In[14]:
 
 
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
@@ -85,10 +85,10 @@ def run_cypher_any(session , query):
     return result
 
 
-# In[6]:
+# In[ ]:
 
 
-example_query="MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 100"
+example_query="MATCH (n)-[r]->(m)"
 a=run_cypher_any(session, example_query)
 
 
@@ -102,6 +102,22 @@ records = [record.data() for record in a]
 
 
 records[0]
+
+
+# In[15]:
+
+
+def get_all_node_and_their_connections(session):
+        result = session.run("MATCH (n)-[r]->(m) RETURN n, r, m")
+        return list(result)
+
+k= session.execute_read(get_all_node_and_their_connections)
+
+
+# In[18]:
+
+
+k[0]["r"]
 
 
 # ## Basic information.
@@ -333,10 +349,8 @@ def get_all_nodes__and__their_connections(session):
     def get_alone_nodes(session):
         result = session.run('''
         MATCH (n)
-    WHERE NOT EXISTS ((n)--())
-    RETURN n
-
-
+        WHERE NOT EXISTS ((n)--())
+        RETURN n
         ''')
         return list(result)
 
@@ -344,7 +358,6 @@ def get_all_nodes__and__their_connections(session):
     for i in k:
         n=i["n"]
         NID=dict(n)["user_generate_id_7577777777"]
-
         if NID not in nodesid:
             nodesid[NID]=1
             kkkk=dict(n)
@@ -356,7 +369,7 @@ def get_all_nodes__and__their_connections(session):
     return oooo
 
 
-# In[34]:
+# In[ ]:
 
 
 # get_all_nodes__and__their_connections(session)
