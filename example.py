@@ -89,19 +89,19 @@ def run_cypher_any(session , query):
 
 
 example_query="MATCH (n)-[r]->(m)"
-a=run_cypher_any(session, example_query)
+# a=run_cypher_any(session, example_query)
 
 
 # In[8]:
 
 
-records = [record.data() for record in a]
+# records = [record.data() for record in a]
 
 
 # In[12]:
 
 
-records[0]
+# records[0]
 
 
 # In[15]:
@@ -111,13 +111,13 @@ def get_all_node_and_their_connections(session):
         result = session.run("MATCH (n)-[r]->(m) RETURN n, r, m")
         return list(result)
 
-k= session.execute_read(get_all_node_and_their_connections)
+# k= session.execute_read(get_all_node_and_their_connections)
 
 
 # In[18]:
 
 
-k[0]["r"]
+# k[0]["r"]
 
 
 # ## Basic information.
