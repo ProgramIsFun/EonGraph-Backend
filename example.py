@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[3]:
+# In[2]:
 
 
 p=print
 import uuid
 
 
-# In[2]:
+# In[3]:
 
 
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
@@ -24,7 +24,7 @@ session = driver_.session(database=NEO4J_DATABASE)
 # ## Helper Functions
 # 
 
-# In[ ]:
+# In[4]:
 
 
 import os
@@ -75,12 +75,33 @@ def clear_all_caches(cache_dir='.'):
     return deleted
 
 
-# In[ ]:
+# In[5]:
 
 
-def run_cypher_any(session , query):
+# return  <neo4j._sync.work.result.Result object at XXXXXXXXXX>
+def run_cypher_any(session , query):  
+
     result= session.run(query)
     return result
+
+
+# In[6]:
+
+
+example_query="MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 100"
+a=run_cypher_any(session, example_query)
+
+
+# In[8]:
+
+
+records = [record.data() for record in a]
+
+
+# In[12]:
+
+
+records[0]
 
 
 # ## Basic information.
@@ -168,13 +189,13 @@ def get_specific_node_with_specific_id(id):
 # get_specific_node_with_specific_id("9b6097ab-f834-4789-a542-ced4f9478cc5")
 
 
-# #### get_nodewith_specific_property
+# #### get_node_with_specific_property
 
 # In[ ]:
 
 
-def get_nodewith_specific_property(tx, property):
-    p("get_nodewith_specific_property called with property:", property)
+def get_node_with_specific_property(tx, property):
+    p("get_node_with_specific_property called with property:", property)
     query = f'''
 
     MATCH (n)
@@ -183,7 +204,7 @@ def get_nodewith_specific_property(tx, property):
     '''
     result = tx.run(query)
     return list(result)
-# k=session.execute_read(get_nodewith_specific_property, property="ue_location_X")
+# k=session.execute_read(get_node_with_specific_property, property="ue_location_X")
 
 
 # In[29]:
@@ -489,7 +510,7 @@ def create_node_tx(tx, name, id8):
     return record["node_id"]
 
 
-# #### create_node_with_generate_id
+# #### create_note_with_generate_id
 
 # In[ ]:
 
