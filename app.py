@@ -163,7 +163,7 @@ def api_get_all_github_repositories():
 
 # create 
 
-@app.route('/api/v0/create_node77777777', methods=['POST'])
+@app.route('/api/v0/create_node77777777', methods=['POST']) # to-do: delete this route, let unreal engine call the create_node route
 @app.route('/api/v0/create_node', methods=['POST'])
 def api_create_node():
     data = request.get_json()
@@ -185,7 +185,6 @@ def api_create_node():
             }, 200
 
 # update
-
 @app.route('/api/v0/update_color_of_all_nodes', methods=['POST'])
 def api_update_colors():
     data = request.get_json()
