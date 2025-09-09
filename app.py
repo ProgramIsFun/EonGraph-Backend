@@ -4,9 +4,8 @@ import re
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, g, request, send_from_directory, abort, render_template, jsonify
 from flask_cors import CORS
-from flask_json import FlaskJSON, json_response
+from flask_json import FlaskJSON
 from neo4j import GraphDatabase, basic_auth
-
 from example import get_all_nodes__and__their_connections
 from example import update_position_of_all_node
 from example import create_node_with_generate_id_and_position
