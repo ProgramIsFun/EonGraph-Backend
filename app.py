@@ -12,7 +12,7 @@ from example import get_specific_node_with_specific_id,update_color_of_all_nodes
 from example import get_github_repositories,clear_all_caches,run_cypher_any
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD
 
-def p(*args):
+def l(*args):
     print(args)
 
 load_dotenv(find_dotenv())
@@ -92,16 +92,16 @@ def api_run_any_cypher():
     if request.method == 'OPTIONS':
         return {}, 200
     data = request.get_json()
-    p('run_any_cypher', data)
+    l('run_any_cypher', data)
     if not data or 'data' not in data:
         return {'message': 'No data provided'}, 400
     cypher_query = data['data']
     if cypher_query.strip() == "":
         return {'message': 'Empty cypher query'}, 400
     result = run_cypher_any(db,cypher_query)
-    p("result", result)
+    l("result", result)
     jsonified= jsonify(result)
-    p("jsonified", jsonified)
+    l("jsonified", jsonified)
     return jsonified,200
 
 
@@ -112,10 +112,10 @@ def api_get_specific_node():
     if request.method == 'OPTIONS':
         return {}, 200
     data = request.get_json()
-    p('get_specific_node_with_specific_id', data)
+    l('get_specific_node_with_specific_id', data)
     node_id = data['nodeIdAccess']
     oooo = get_specific_node_with_specific_id(node_id)
-    p("oooo111", oooo)
+    l("oooo111", oooo)
     if not oooo:
         return {'message': 'Node not found'}, 404
     return {'node': oooo}, 200
@@ -123,12 +123,12 @@ def api_get_specific_node():
 @app.route('/api/v0/return_all_nodes111', methods=['GET'])
 def api_get_all_nodes():
     try:
-        p("get_all_node_and_their_connections")
+        l("get_all_node_and_their_connections")
         db = get_db()
         oooo = get_all_nodes__and__their_connections(db)
         return jsonify(oooo)
     except Exception as e:
-        p('Error occurred while fetching nodes and connections:', str(e))
+        l('Error occurred while fetching nodes and connections:', str(e))
         return {'message': 'Error occurred', 'error': str(e)}, 500
 
 # get the id property that exist on all the node
@@ -148,7 +148,7 @@ def api_get_all_github_repositories():
 @app.route('/api/v0/create_node', methods=['POST'])
 def api_create_node():
     data = request.get_json()
-    p('create_node 15355673', data)
+    l('create_node 15355673', data)
     n = data['name']
     db = get_db()
     x = data['locationX']
@@ -171,7 +171,7 @@ def api_update_colors():
     data = request.get_json()
     db = get_db()
     ppppp = update_color_of_all_nodes(db, data)
-    p(len(ppppp))
+    l(len(ppppp))
     # Save JSON data if needed...
     return {'message': 'success.'}, 200
 
@@ -180,7 +180,7 @@ def api_update_positions():
     data = request.get_json()
     db = get_db()
     ppppp = update_position_of_all_node(db, data)
-    p(len(ppppp))
+    l(len(ppppp))
     # Save JSON data if needed...
     return {'message': 'success.'}, 200
 
@@ -188,7 +188,7 @@ def api_update_positions():
 @app.route('/api/v0/delete_node', methods=['POST'])
 def api_delete_node():
     data = request.get_json()
-    p('delete_node', data)
+    l('delete_node', data)
     n = data['id']
     db = get_db()
     # ppppp=delete_node(db, n)
