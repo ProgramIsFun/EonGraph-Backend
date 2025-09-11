@@ -22,6 +22,17 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 FlaskJSON(app)
 
+# >>> Place error handler function here <<<
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # You can also log the error here
+    response = {
+        "success": False,
+        "error": str(e)
+    }
+    return jsonify(response), 500
+
 # --- ENVIRONMENT & CONFIG ---
 
 def env(key, default=None, required=True):
