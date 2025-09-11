@@ -11,6 +11,9 @@ from example import create_node_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
 from example import get_github_repositories,clear_all_caches,run_cypher_any
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD
+from flasgger import Swagger, swag_from
+
+
 
 def l(*args):
     print(args)
@@ -21,8 +24,11 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 FlaskJSON(app)
 
-# >>> Place error handler function here <<<
+# Initialize Flasgger with your Flask app
+swagger = Swagger(app)
 
+
+# Place error handler function here 
 @app.errorhandler(Exception)
 def handle_exception(e):
     # You can also log the error here
@@ -69,6 +75,17 @@ def close_db(error):
 # general
 
 @app.route('/health', methods=['GET'])
+@swag_from({
+    'tags': ["health"],
+    'responses': {
+        200: {
+            'description': 'Health check',
+            'examples': {
+                "application/json": {"message": "ok, no problem, version 1.0.0"}
+            }
+        }
+    }
+})
 def health():
     return {"message": "ok, no problem, version 1.0.0"}, 200
 
