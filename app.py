@@ -276,15 +276,77 @@ def api_get_all_node_ids():
     application_ids = NODE_ID_ACCESSOR
     return jsonify({"id_ref": application_ids}), 200
 
+
 @app.route('/api/v0/get_all_github_repositories', methods=['GET'])
+@swag_from({
+    'tags': ["github"],
+    'responses': {
+        200: {
+            'description': 'GitHub repositories retrieved successfully',
+            'examples': {
+                "application/json": {"repositories": []}
+            }
+        },
+        500: {
+            'description': 'Internal Server Error',
+            'examples': {
+                "application/json": {"message": "Error occurred", "error": "error details"}
+            }
+        }
+    }
+})
 def api_get_all_github_repositories():
     repos=get_github_repositories()
     return jsonify(repos), 200
 
 # create 
-
-@app.route('/api/v0/create_node77777777', methods=['POST']) # to-do: delete this route, let unreal engine call the create_node route
 @app.route('/api/v0/create_node', methods=['POST'])
+@swag_from({
+    'tags': ["nodes"],
+    'parameters': [
+        {
+            'name': 'data',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'name': {
+                        'type': 'string',
+                        'example': 'Node Name'
+                    },
+                    'locationX': {
+                        'type': 'number',
+                        'example': 0.0
+                    },
+                    'locationY': {
+                        'type': 'number',
+                        'example': 0.0
+                    },
+                    'locationZ': {
+                        'type': 'number',
+                        'example': 0.0
+                    }
+                },
+                'required': ['name', 'locationX', 'locationY', 'locationZ']
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Node created successfully',
+            'examples': {
+                "application/json": {"message": "success.", "id": "node_id", "name": "Node Name"}
+            }
+        },
+        400: {
+            'description': 'Bad Request',
+            'examples': {
+                "application/json": {"message": "No data provided"}
+            }
+        }
+    }
+})
 def api_create_node():
     data = request.get_json()
     l('create_node 15355673', data)
@@ -293,15 +355,15 @@ def api_create_node():
     x = data['locationX']
     y = data['locationY']
     z = data['locationZ']
-    ppppp1 = create_node_with_generate_id_and_position(db, n, x, y, z)
-    ppppp = {
-        "id": ppppp1,
+    id_return = create_node_with_generate_id_and_position(db, n, x, y, z)
+    nodeObject = {
+        "id": id_return,
         "name": n
     }
     return {
             'message': 'success.',
-            'id': ppppp['id'],
-            'name': ppppp['name']
+            'id': nodeObject['id'],
+            'name': nodeObject['name']
             }, 200
 
 # update
