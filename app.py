@@ -228,7 +228,24 @@ def api_get_specific_node():
         return {'message': 'Node not found'}, 404
     return {'node': nodeObject}, 200
 
-@app.route('/api/v0/return_all_nodes111', methods=['GET'])
+@app.route('/api/v0/return_all_nodes', methods=['GET'])
+@swag_from({
+    'tags': ["nodes"],
+    'responses': {
+        200: {
+            'description': 'All nodes and their connections retrieved successfully',
+            'examples': {
+                "application/json": {"nodes": [], "connections": []}
+            }
+        },
+        500: {
+            'description': 'Internal Server Error',
+            'examples': {
+                "application/json": {"message": "Error occurred", "error": "error details"}
+            }
+        }
+    }
+})
 def api_get_all_nodes():
     try:
         l("get_all_node_and_their_connections")
