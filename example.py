@@ -593,17 +593,19 @@ def create_node_with_generate_id(session, name):
 
 
 def create_node_tx_with_position(tx, name, id8, x, y, z):
-    p("create_node_tx_with_position called with name:", name, "id8:", id8, "x:", x, "y:", y, "z:", z)
-    query = ("CREATE (n:normalNode588888888 {"
-             "name: $name, "
-             "user_generate_id_7577777777: $id8, "
-             "ue_location_X: $x, "
-             "ue_location_Y: $y, "
-             "ue_location_Z: $z}) "
-             "RETURN n.user_generate_id_7577777777 AS node_id")
+    print("create_node_tx_with_position called with name:", name, "id8:", id8, "x:", x, "y:", y, "z:", z)
+    query = (
+        f"CREATE (n:normalNode588888888 {{"
+        f"name: $name, "
+        f"{NODE_ID_ACCESSOR}: $id8, "
+        f"ue_location_X: $x, "
+        f"ue_location_Y: $y, "
+        f"ue_location_Z: $z}}) "
+        f"RETURN n.{NODE_ID_ACCESSOR} AS node_id"
+    )
     result = tx.run(query, name=name, id8=id8, x=x, y=y, z=z)
     record = result.single()
-    return record["node_id"]
+    return record["node_id"] if record else None
 
 
 # #### create_note_with_provided_position_with_generate_id
