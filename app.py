@@ -15,10 +15,31 @@ from flasgger import Swagger, swag_from
 
 
 
+load_dotenv(find_dotenv())
+
+NODE_ID_ACCESSOR = "user_generate_id_7577777777"
+
 def l(*args):
     print(args)
 
-load_dotenv(find_dotenv())
+# --- NEO4J SETUP ---
+
+driver = GraphDatabase.driver(
+    NEO4J_URI, auth=basic_auth(NEO4J_USERNAME, str(NEO4J_PASSWORD))
+)
+
+# check if node_id_accessor exist on all nodes, if any node does not have it, exit with error
+with driver.session() as session:
+    result = session.run(f"MATCH (n) WHERE NOT exists(n.{NODE_ID_ACCESSOR}) RETURN count(n) AS count")
+    count = result.single().get("count", 0)
+    if count > 0:
+        l(f"Error: There are {count} nodes without the '{NODE_ID_ACCESSOR}' property. Please ensure all nodes have this property.")
+        exit(1)
+    else:
+        l(f"All nodes have the '{NODE_ID_ACCESSOR}' property.")
+
+
+# --- FLASK SETUP ---
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -54,11 +75,7 @@ def env(key, default=None, required=True):
 app.config['SECRET_KEY'] = "super secret guy"
 
 
-# --- NEO4J SETUP ---
 
-driver = GraphDatabase.driver(
-    NEO4J_URI, auth=basic_auth(NEO4J_USERNAME, str(NEO4J_PASSWORD))
-)
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):
