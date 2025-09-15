@@ -831,8 +831,8 @@ def delete_node_with_specific_id(tx, id):
 # In[ ]:
 
 
-def delete_note_with_specific_idand_label(tx, label, id):
-    p("delete_note_with_specific_idand_label called with label:", label, "and id:", id)
+def delete_note_with_specific_id_and_label(tx, label, id):
+    p("delete_note_with_specific_id_and_label called with label:", label, "and id:", id)
     # Query that matches node with specific label and ID, deletes it, and counts deleted nodes.
     query = f'''
     MATCH (n:{label})
@@ -847,7 +847,7 @@ def delete_note_with_specific_idand_label(tx, label, id):
 # In[ ]:
 
 
-# k=delete_note_with_specific_idand_label(session, "NodeExample", "9b6097ab-f834-4789-a542-ced4f9478cc5")
+# k=delete_note_with_specific_id_and_label(session, "NodeExample", "9b6097ab-f834-4789-a542-ced4f9478cc5")
 
 
 # In[ ]:
