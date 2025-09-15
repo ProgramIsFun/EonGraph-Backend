@@ -103,7 +103,7 @@ def close_db(error):
 def health():
     return {"message": "ok, no problem, version 1.0.0"}, 200
 
-@app.route('/original')
+@app.route('/sampleHtml', methods=['GET'])
 @swag_from({
     'tags': ["general"],
     'responses': {
