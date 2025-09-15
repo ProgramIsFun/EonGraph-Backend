@@ -490,16 +490,16 @@ def update_position_of_all_node(session,d,mode):
 
 
     def update_nodes(tx, data):
-        query = """
-
-        UNWIND $data AS item
-        MATCH (n {user_generate_id_7577777777: item.ID})
-        SET n.ue_location_X = item.X,
-            n.ue_location_Y = item.Y,
-            n.ue_location_Z = item.Z
-        RETURN n.ID, n.ue_location_X, n.ue_location_Y, n.ue_location_Z
-
-        """
+        query = (
+            f"""
+            UNWIND $data AS item
+            MATCH (n {{{NODE_ID_ACCESSOR}: item.ID}})
+            SET n.ue_location_X = item.X,
+                n.ue_location_Y = item.Y,
+                n.ue_location_Z = item.Z
+            RETURN n.{NODE_ID_ACCESSOR} AS node_id, n.ue_location_X, n.ue_location_Y, n.ue_location_Z
+            """
+        )
         result = tx.run(query, data=data)
         return list(result)
 
