@@ -30,14 +30,15 @@ driver = GraphDatabase.driver(
 
 # check if node_id_accessor exist on all nodes, if any node does not have it, exit with error
 with driver.session() as session:
-    result = session.run(f"MATCH (n) WHERE NOT exists(n.{NODE_ID_ACCESSOR}) RETURN count(n) AS count")
+    result = session.run(
+        f"MATCH (n) WHERE n.{NODE_ID_ACCESSOR} IS NULL RETURN count(n) AS count"
+    )
     count = result.single().get("count", 0)
     if count > 0:
         l(f"Error: There are {count} nodes without the '{NODE_ID_ACCESSOR}' property. Please ensure all nodes have this property.")
         exit(1)
     else:
         l(f"All nodes have the '{NODE_ID_ACCESSOR}' property.")
-
 
 # --- FLASK SETUP ---
 
