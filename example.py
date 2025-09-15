@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# In[1]:
+
+
+1
+
+
+# In[ ]:
+
+
+
+
+
 # In[2]:
 
 
@@ -14,10 +26,10 @@ import uuid
 from flask import jsonify
 
 
-# In[4]:
+# In[ ]:
 
 
-from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN,NODE_ID_ACCESSOR
 
 AUTH = (NEO4J_USERNAME, NEO4J_PASSWORD)
 
@@ -217,7 +229,7 @@ def get_record_with_specific_id(tx, id):
     query = f'''
 
     MATCH (n)
-        WHERE n.user_generate_id_7577777777 = "{id}"
+        WHERE n.{NODE_ID_ACCESSOR} = "{id}"
         RETURN n
     '''
     result = tx.run(query)
@@ -360,9 +372,9 @@ def get_all_nodes__and__their_connections(session):
         n=i["n"]
         m=i["m"]
 
-        NID=dict(n)["user_generate_id_7577777777"]
+        NID=dict(n)[NODE_ID_ACCESSOR]
         Ninternal_id=n.element_id
-        MID=dict(m)["user_generate_id_7577777777"]
+        MID=dict(m)[NODE_ID_ACCESSOR]
         Minternal_id=m.element_id
         if NID not in nodesid:
             nodesid[NID]=1
@@ -398,7 +410,7 @@ def get_all_nodes__and__their_connections(session):
     k=session.execute_read(get_alone_nodes)
     for i in k:
         n=i["n"]
-        NID=dict(n)["user_generate_id_7577777777"]
+        NID=dict(n)[NODE_ID_ACCESSOR]
         if NID not in nodesid:
             nodesid[NID]=1
             kkkk=dict(n)
@@ -554,14 +566,16 @@ def _create_constraint(tx, label, property):
 
 
 def create_node_tx(tx, name, id8):
-    p("create_node_tx called with name:", name, "and id8:", id8)
-    query = ("CREATE (n:normalNode588888888 {"
-             "name: $name, "
-             "user_generate_id_7577777777:$id8 }) "
-             "RETURN n.user_generate_id_7577777777 AS node_id")
+    print("create_node_tx called with name:", name, "and id8:", id8)
+    query = (
+        f"CREATE (n:normalNode588888888 {{"
+        f"name: $name, "
+        f"{NODE_ID_ACCESSOR}: $id8}}) "
+        f"RETURN n.{NODE_ID_ACCESSOR} AS node_id"
+    )
     result = tx.run(query, name=name, id8=id8)
     record = result.single()
-    return record["node_id"]
+    return record["node_id"] if record else None
 
 
 # #### create_note_with_generate_id

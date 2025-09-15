@@ -203,7 +203,7 @@ def api_get_all_nodes():
 # get the id property that exist on all the node
 @app.route('/api/v0/get_all_node_ids', methods=['GET'])
 def api_get_all_node_ids():
-    application_ids = "user_generate_id_7577777777"
+    application_ids = NODE_ID_ACCESSOR
     return jsonify({"id_ref": application_ids}), 200
 
 @app.route('/api/v0/get_all_github_repositories', methods=['GET'])
