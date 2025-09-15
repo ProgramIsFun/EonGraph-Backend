@@ -228,7 +228,7 @@ def api_get_specific_node():
         return {'message': 'Node not found'}, 404
     return {'node': nodeObject}, 200
 
-@app.route('/api/v0/return_all_nodes', methods=['GET'])
+@app.route('/api/v0/return_all_nodes_and_their_connections_if_any', methods=['GET'])
 @swag_from({
     'tags': ["nodes"],
     'responses': {
