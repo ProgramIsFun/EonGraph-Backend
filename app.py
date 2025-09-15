@@ -37,7 +37,7 @@ with driver.session() as session:
         l(f"Error: There are {count} nodes without the '{NODE_ID_ACCESSOR}' property. Please ensure all nodes have this property.")
         exit(1)
     else:
-        l(f"All nodes have the '{NODE_ID_ACCESSOR}' property.")
+        l(f"All nodes have the '{NODE_ID_ACCESSOR}' property. Check is complete. Moving on...")
 
 # --- FLASK SETUP ---
 
