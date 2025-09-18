@@ -1,9 +1,3 @@
-
-# dev logs
-
-- This branch is coming from https://github.com/ProgramIsFun/graphPythonBackend11/tree/master.  I basically take one folder of that branch and then make it azure compatible in this branch
-- 14/8/25  https://github.com/ProgramIsFun/EonGraph-Backend/commit/37f857deae2675eb9153f7b508015466da0b752a  Changed the old library to normal flask
-
 # how to develop
 
 you modify ipynb files and then convert them to python files using nbconvert.
@@ -78,6 +72,15 @@ So when writing the code, I assume some user-generated ID will be used. These ar
 
 MATCH (p:Person {user_id: 123}), (m:Movie {movie_id: 567})
 CREATE (p)-[:LIKES]->(m)
+
+
+# dev logs
+
+- This branch is coming from https://github.com/ProgramIsFun/graphPythonBackend11/tree/master.  I basically take one folder of that branch and then make it azure compatible in this branch
+- 14/8/25  https://github.com/ProgramIsFun/EonGraph-Backend/commit/37f857deae2675eb9153f7b508015466da0b752a  Changed the old library to normal flask
+
+
+
 
 # below is the original readme from the original repo
 
