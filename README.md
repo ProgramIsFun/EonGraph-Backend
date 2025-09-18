@@ -48,24 +48,6 @@ Full docs: [Azure Python Quickstart](https://learn.microsoft.com/en-us/azure/app
 
 _Reference: [Azure Flask Quickstart](https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli)_
 
-# principles in neo4j
-
-It is recommended to use a user-generated ID in Neo4j for robust and portable node identification.
-
-should it named id?
-
-Short Answer:
-It’s better not to name your user-generated ID simply id. Instead, use a more descriptive property name (like userId, uuid, productId, etc.).
-
-Why Not Just id?
-Neo4j already has an internal node identifier that can be accessed using the id() function.
-Naming your property id can cause confusion, especially for new users or when reading Cypher queries.
-Explicit and descriptive naming helps maintain readability and prevents accidental mix-ups between your property and Neo4j’s built-in identifier.
-
-So when writing the code, I assume some user-generated ID will be used. These are useful when editing the graph.
-
-MATCH (p:Person {user_id: 123}), (m:Movie {movie_id: 567})
-CREATE (p)-[:LIKES]->(m)
 
 
 # dev logs
