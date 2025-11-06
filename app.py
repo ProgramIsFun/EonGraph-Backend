@@ -11,7 +11,7 @@ from example import get_all_node_and_their_connections13
 from example import update_position_of_all_node_772
 from example import create_note_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
-from example import get_github_repositories,clear_all_caches
+from example import get_github_repositories,clear_all_caches,run_cypher_any
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
 
 def p(*args):
@@ -103,6 +103,21 @@ def api_docs(path=None):
 def index():
     print('Request for index page received')
     return render_template('index.html')
+
+
+# run any cypher
+@app.route('/api/v0/run_any_cypher', methods=['POST', 'OPTIONS'])
+def api_run_any_cypher():
+    db = get_db()
+    if request.method == 'OPTIONS':
+        return {}, 200
+    data = request.get_json()
+    p('run_any_cypher', data)
+    cypher_query = data['cypherQuery']
+    result = run_cypher_any(db,cypher_query)
+    p("result", result)
+    return jsonify(result), 200
+
 
 # read
 

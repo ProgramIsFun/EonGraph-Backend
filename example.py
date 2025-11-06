@@ -72,6 +72,14 @@ def clear_all_caches(cache_dir='.'):
     return deleted
 
 
+# In[ ]:
+
+
+def run_cypher_any(session , query):
+    result= session.run(query)
+    return result
+
+
 # ## Basic information.
 
 # #### get_github_repositories
@@ -82,7 +90,7 @@ def clear_all_caches(cache_dir='.'):
 
 import requests
 
-def get_github_repositories(cache_expiry=600):
+def get_github_repositories(cache_expiry=60000000000000):
     CACHE_KEY = 'github_user_repos_v1'   # Can be made more specific e.g. by username
     repos = load_cache_generic(CACHE_KEY, expiry_seconds=cache_expiry)
     if repos is not None:
