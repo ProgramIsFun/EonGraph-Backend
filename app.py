@@ -17,7 +17,7 @@ from flasgger import Swagger, swag_from
 
 load_dotenv(find_dotenv())
 
-NODE_ID_ACCESSOR = "user_generate_id_7577777777"
+NODE_ID_ACCESSOR = "user_generate_id_7577777777"  # this value is just an example, you just need to make sure this property exist on all nodes
 
 def l(*args):
     print(args)
