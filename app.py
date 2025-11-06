@@ -12,7 +12,7 @@ from example import update_position_of_all_node
 from example import create_node_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
 from example import get_github_repositories,clear_all_caches,run_cypher_any
-from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD
 
 def p(*args):
     print(args)
