@@ -130,7 +130,7 @@ def index():
 
 
 # run any cypher
-@app.route('/api/v0/run_any_cypher', methods=['POST', 'OPTIONS'])
+@app.route('/api/v0/run_any_cypher', methods=['POST'])
 @swag_from({
     'tags': ["cypher"],
     'parameters': [
@@ -167,8 +167,6 @@ def index():
 })
 def api_run_any_cypher():
     db = get_db()
-    if request.method == 'OPTIONS':
-        return {}, 200
     data = request.get_json()
     l('run_any_cypher', data)
     if not data or 'data' not in data:
