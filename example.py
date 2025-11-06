@@ -21,7 +21,7 @@ driver_ = GraphDatabase.driver(NEO4J_URI, auth=AUTH)
 session = driver_.session(database=NEO4J_DATABASE)
 
 
-# In[8]:
+# In[ ]:
 
 
 import os
@@ -54,6 +54,22 @@ def save_cache_generic(key, data, cache_dir='.'):
     cache = {'time': time.time(), 'data': data}
     with open(fn, 'w', encoding='utf-8') as f:
         json.dump(cache, f)
+
+import os
+import glob
+
+def clear_all_caches(cache_dir='.'):
+    """Remove all cache files created by the generic cache system."""
+    pattern = os.path.join(cache_dir, 'cache_*.json')
+    deleted = 0
+    for cache_file in glob.glob(pattern):
+        try:
+            os.remove(cache_file)
+            deleted += 1
+        except Exception as e:
+            print(f"Failed to delete {cache_file}: {e}")
+    print(f"Deleted {deleted} cache files.")
+    return deleted
 
 
 # ## Basic information.
