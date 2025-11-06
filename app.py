@@ -86,9 +86,12 @@ def set_user():
 
 # --- API ENDPOINTS ---
 
+
+
+
 @app.route('/health', methods=['GET'])
 def health():
-    return {"message": "success!!!!!!!!!!!!!!!!!!!!!!!!!"}, 200
+    return {"message": "ok, no problem"}, 200
 
 @app.route('/docs/<path:path>', methods=['GET'])
 @app.route('/docs', methods=['GET'])
@@ -96,6 +99,9 @@ def api_docs(path=None):
     if not path:
         path = 'index.html'
     return send_from_directory('swaggerui', path)
+
+
+# read
 
 @app.route('/api/v0/get_specific_node_with_specific_id', methods=['POST', 'OPTIONS'])
 def api_get_specific_node():
@@ -121,14 +127,7 @@ def api_get_all_nodes():
         p('Error occurred while fetching nodes and connections:', str(e))
         return {'message': 'Error occurred', 'error': str(e)}, 500
 
-@app.route('/api/v0/update_position_of_all_nodes111', methods=['POST'])
-def api_update_positions():
-    data = request.get_json()
-    db = get_db()
-    ppppp = update_position_of_all_node_772(db, data)
-    p(len(ppppp))
-    # Save JSON data if needed...
-    return {'message': 'success!'}, 200
+# create 
 
 @app.route('/api/v0/create_node77777777', methods=['POST'])
 def api_create_node():
@@ -150,6 +149,18 @@ def api_create_node():
             'name': ppppp['name']
             }, 200
 
+# update
+@app.route('/api/v0/update_position_of_all_nodes111', methods=['POST'])
+def api_update_positions():
+    data = request.get_json()
+    db = get_db()
+    ppppp = update_position_of_all_node_772(db, data)
+    p(len(ppppp))
+    # Save JSON data if needed...
+    return {'message': 'success!'}, 200
+
+# delete
+
 @app.route('/api/v0/delete_node', methods=['POST'])
 def api_delete_node():
     data = request.get_json()
@@ -157,7 +168,7 @@ def api_delete_node():
     n = data['id']
     db = get_db()
     # ppppp=delete_node(db, n)
-    return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!'}, 200
+    return {'message': 'ok, no problem'}, 200
 
 @app.route('/original')
 def index():
