@@ -189,7 +189,7 @@ def api_run_any_cypher():
                 'properties': {
                     'nodeIdAccess': {
                         'type': 'string',
-                        'example': '7577777777'
+                        'example': '{the id value}'
                     }
                 },
                 'required': ['nodeIdAccess']
@@ -199,8 +199,8 @@ def api_run_any_cypher():
     'responses': {
         200: {
             'description': 'Node retrieved successfully',
-            'examples': {
-                "application/json": {"node": {}}
+            'examples': {   
+                "application/json": {"node": "node object"}
             }
         },
         400: {
