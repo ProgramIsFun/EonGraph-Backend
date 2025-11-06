@@ -375,14 +375,20 @@ def _get_constraints(tx):
 
 # ## Editing things.
 
-# #### update_position_of_all_node_772
+# #### update_position_of_all_node
 
 # In[ ]:
 
 
-def update_position_of_all_node_772(session,d):
 
-    p("update_position_of_all_node_772 called with data:", d)
+
+
+# In[ ]:
+
+
+def update_position_of_all_node(session,d,mode):
+
+    p("update_position_of_all_node called with data:", d)
 
     output_data = []
 
@@ -414,6 +420,9 @@ def update_position_of_all_node_772(session,d):
     updated_nodes = session.execute_write(update_nodes, output_data)
     return updated_nodes
 
+
+
+
 # d=[
 #       {
 #         "ID": "9b6097ab-f834-4789-a542-ced4f9478cc5",
@@ -424,7 +433,7 @@ def update_position_of_all_node_772(session,d):
 #         }
 #       }
 #     ]
-# a=update_position_of_all_node_772(session,d)
+# a=update_position_of_all_node(session,d)
 
 
 # #### update_color_of_all_nodes
