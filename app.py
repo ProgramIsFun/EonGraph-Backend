@@ -135,11 +135,36 @@ def api_get_all_nodes():
 
 @app.route('/api/v0/get_all_github_repositories', methods=['GET'])
 def api_get_all_github_repositories():
-    # fetch github api
-    pass
+    import requests
 
+    token = "YOUR_GITHUB_TOKEN"  # Replace with your personal access token
+    url = "https://api.github.com/user/repos"
 
+    headers = {
+        "Authorization": f"token {token}"
+    }
 
+    repos = []
+    page = 1
+
+    while True:
+        response = requests.get(url, headers=headers, params={'per_page': 100, 'page': page})
+        if response.status_code != 200:
+            print(f"Error {response.status_code}: {response.text}")
+            break
+        data = response.json()
+        if not data:
+            break
+        repos.extend(data)
+        page += 1
+
+    # Print summarized info as markdown table
+    print("| Name | Full Name | Private | HTML URL |")
+    print("|------|-----------|---------|----------|")
+    for repo in repos:
+        print(f"| {repo['name']} | {repo['full_name']} | {repo['private']} | {repo['html_url']} |")
+
+    return jsonify(repos), 200
 
 
 # create 
