@@ -137,13 +137,13 @@ class ApiDocs(Resource):
 
 
 
-class return_all_nodes(Resource):
+class get_all_node_and_their_connections(Resource):
     def get(self):
 
         try:
-            p("get_all_node_and_their_connections13")
+            p("get_all_node_and_their_connections")
             db = get_db()
-            p("ggggggggggggggggggggggggggggggg")
+            
             # p(db)
             session = db
             p("return_all_nodes1112222222222222222222222222222222222222222222222222222222222222")
@@ -264,7 +264,7 @@ api.add_resource(update_position_of_all_nodes, '/api/v0/update_position_of_all_n
 api.add_resource(create_node, '/api/v0/create_node77777777')
 api.add_resource(delete_node, '/api/v0/delete_node')
 
-api.add_resource(return_all_nodes, '/api/v0/return_all_nodes111')
+api.add_resource(get_all_node_and_their_connections, '/api/v0/return_all_nodes111')
 
 
 
