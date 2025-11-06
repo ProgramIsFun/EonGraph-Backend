@@ -11,6 +11,7 @@ from example import get_all_node_and_their_connections13
 from example import update_position_of_all_node_772
 from example import create_note_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
+from example import get_github_repositories
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
 
 def p(*args):
@@ -131,35 +132,8 @@ def api_get_all_nodes():
 
 @app.route('/api/v0/get_all_github_repositories', methods=['GET'])
 def api_get_all_github_repositories():
-    import requests
-
-    token = GITHUB_TOKEN
-    url = "https://api.github.com/user/repos"
-
-    headers = {
-        "Authorization": f"token {token}"
-    }
-
-    repos = []
-    page = 1
-
-    while True:
-        response = requests.get(url, headers=headers, params={'per_page': 100, 'page': page})
-        if response.status_code != 200:
-            print(f"Error {response.status_code}: {response.text}")
-            break
-        data = response.json()
-        if not data:
-            break
-        repos.extend(data)
-        page += 1
-
-    # Print summarized info as markdown table
-    print("| Name | Full Name | Private | HTML URL |")
-    print("|------|-----------|---------|----------|")
-    for repo in repos:
-        print(f"| {repo['name']} | {repo['full_name']} | {repo['private']} | {repo['html_url']} |")
-
+    
+    repos=get_github_repositories()
     return jsonify(repos), 200
 
 # create 
@@ -213,10 +187,6 @@ def api_delete_node():
     db = get_db()
     # ppppp=delete_node(db, n)
     return {'message': 'ok, no problem'}, 200
-
-
-
-
 
 
 if __name__ == '__main__':
