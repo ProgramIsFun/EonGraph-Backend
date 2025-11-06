@@ -1,6 +1,6 @@
-## 🚀 How to Develop
+## 🚀 development cycle
 
-Edit your `.ipynb` (Jupyter notebook) files, then convert them to Python scripts for deployment:
+Edit your `.ipynb` (Jupyter notebook) files, then convert them to Python scripts for git commit:
 
 | Step | Command                                               | Description                       |
 |------|------------------------------------------------------|-----------------------------------|
