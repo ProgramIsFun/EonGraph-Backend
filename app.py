@@ -167,10 +167,12 @@ class update_position_of_all_nodes111(Resource):
         ppppp=update_position_of_all_node_772(db, data)
         p(len(ppppp))
         # Writing JSON data
-        # import json
-        # with open('data1111111111.json', 'w') as file:
-        #     json.dump(data, file)
-        #
+        save= 0
+        if save:
+            import json
+            with open('data1111111111.json', 'w') as file:
+                json.dump(data, file)
+
         # Return correct code
 
         return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!'}, 200
