@@ -468,6 +468,11 @@ def api_update_positions():
     data = request.get_json()
     data_points=data["data_points"]
     prefix=data["prefix"]
+    
+    # only 'WebApp' is supported for now for prefix
+    if prefix != "WebApp":
+        return {'message': 'Only "WebApp" prefix is supported for now.'}, 400
+
     db = get_db()
     result = update_position_of_all_node(db, data_points, prefix)
     l(len(result))
