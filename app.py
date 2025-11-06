@@ -65,36 +65,7 @@ def close_db(error):
     if hasattr(g, 'neo4j_db'):
         g.neo4j_db.close()
 
-# --- AUTH DECORATOR ---
-
-@app.before_request
-def set_user():
-    auth_header = request.headers.get('Authorization')
-    if not auth_header:
-        g.user = {'id': None}
-        return
-    match = re.match(r'^Token (\S+)', auth_header)
-    if not match:
-        abort(401, 'invalid authorization format. Use `Token <token>`')
-        return
-    token = match.group(1)
-
-    def get_user_by_token(tx, token):
-        return tx.run(
-            '''
-            MATCH (user:User {api_key: $api_key}) RETURN user
-            ''', {'api_key': token}
-        ).single()
-    db = get_db()
-    result = db.read_transaction(get_user_by_token, token)
-    try:
-        g.user = result['user']
-    except (KeyError, TypeError):
-        abort(401, 'invalid authorization key')
-    return
-
 # --- API ENDPOINTS ---
-
 
 # general
 
