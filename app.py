@@ -176,6 +176,7 @@ def api_run_any_cypher():
 
 # read
 
+# using post because we might have sensitive data to send along in the future
 @app.route('/api/v0/get_specific_node_with_specific_id', methods=['POST', 'OPTIONS'])
 @swag_from({
     'tags': ["nodes"],
