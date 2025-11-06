@@ -113,7 +113,11 @@ def api_run_any_cypher():
         return {}, 200
     data = request.get_json()
     p('run_any_cypher', data)
-    cypher_query = data['cypherQuery']
+    if not data or 'data' not in data:
+        return {'message': 'No data provided'}, 400
+    cypher_query = data['data']
+    if cypher_query.strip() == "":
+        return {'message': 'Empty cypher query'}, 400
     result = run_cypher_any(db,cypher_query)
     p("result", result)
     return jsonify(result), 200
@@ -161,9 +165,10 @@ def api_get_all_github_repositories():
 # create 
 
 @app.route('/api/v0/create_node77777777', methods=['POST'])
+@app.route('/api/v0/create_node', methods=['POST'])
 def api_create_node():
     data = request.get_json()
-    p('create_no77777777', data)
+    p('create_node 15355673', data)
     n = data['name']
     db = get_db()
     x = data['locationX']
