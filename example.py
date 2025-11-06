@@ -330,7 +330,7 @@ def get_all_nodes__and__their_connections(session):
     p(len(nodes))
     p(len(links))
 
-    def get_all_node_and_their_connections2(session):
+    def get_alone_nodes(session):
         result = session.run('''
         MATCH (n)
     WHERE NOT EXISTS ((n)--())
@@ -340,7 +340,7 @@ def get_all_nodes__and__their_connections(session):
         ''')
         return list(result)
 
-    k=session.execute_read(get_all_node_and_their_connections2)
+    k=session.execute_read(get_alone_nodes)
     for i in k:
         n=i["n"]
         NID=dict(n)["user_generate_id_7577777777"]
