@@ -18,10 +18,7 @@ from neo4j import GraphDatabase, basic_auth
 
 from kkkkkk import get_all_node_and_their_connections13
 from kkkkkk import update_position_of_all_node_772
-
 from kkkkkk import create_note_with_generate_id_and_position
-# from kkkkkk import delete_node
-
 
 def p(*args):
     print(args)
