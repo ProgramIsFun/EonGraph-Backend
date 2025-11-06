@@ -251,18 +251,24 @@ class dddddddd(Resource):
 
                 }, 200
 
-api.add_resource(dddddddd, '/aa1')
+api.add_resource(dddddddd, '/health')
 
 
 
 api.add_resource(ApiDocs, '/docs', '/docs/<path:path>')
 
-api.add_resource(return_all_nodes111, '/api/v0/return_all_nodes111')
+
+
+
+# update
 
 api.add_resource(update_position_of_all_nodes111, '/api/v0/update_position_of_all_nodes111')
-
 api.add_resource(create_no77777777, '/api/v0/create_node77777777')
 api.add_resource(delete_node1, '/api/v0/delete_node')
+
+api.add_resource(return_all_nodes111, '/api/v0/return_all_nodes111')
+
+
 
 
 
