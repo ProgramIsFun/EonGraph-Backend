@@ -242,6 +242,7 @@ class delete_node1(Resource):
                 }, 200
 
 
+
 class dddddddd(Resource):
 
     def get(self):
