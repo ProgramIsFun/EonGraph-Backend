@@ -410,7 +410,54 @@ def api_update_colors():
     # Save JSON data if needed...
     return {'message': 'success.'}, 200
 
-@app.route('/api/v0/update_position_of_all_nodes111', methods=['POST'])
+@app.route('/api/v0/update_position_of_all_nodes', methods=['POST'])
+@swag_from({
+    'tags': ["nodes"],
+    'description': 'This route is work in progress............',
+    'parameters': [
+        {
+            'name': 'data',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'ID': {
+                        'type': 'string',
+                        'example': 'node_id'
+                    },
+                    'X': {
+                        'type': 'number',
+                        'example': 1.0
+                    },
+                    'Y': {
+                        'type': 'number',
+                        'example': 2.0
+                    },
+                    'Z': {
+                        'type': 'number',
+                        'example': 3.0
+                    }
+                },
+                'required': ['ID', 'X', 'Y', 'Z']
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Node positions updated successfully',
+            'examples': {
+                "application/json": {"message": "success."}
+            }
+        },
+        400: {
+            'description': 'Bad Request',
+            'examples': {
+                "application/json": {"message": "No data provided"}
+            }
+        }
+    }
+})
 def api_update_positions():
     data = request.get_json()
     db = get_db()
