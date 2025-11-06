@@ -100,6 +100,11 @@ def api_docs(path=None):
         path = 'index.html'
     return send_from_directory('swaggerui', path)
 
+@app.route('/original')
+def index():
+    print('Request for index page received')
+    return render_template('index.html')
+
 
 # read
 
@@ -160,7 +165,6 @@ def api_update_positions():
     return {'message': 'success!'}, 200
 
 # delete
-
 @app.route('/api/v0/delete_node', methods=['POST'])
 def api_delete_node():
     data = request.get_json()
@@ -170,10 +174,6 @@ def api_delete_node():
     # ppppp=delete_node(db, n)
     return {'message': 'ok, no problem'}, 200
 
-@app.route('/original')
-def index():
-    print('Request for index page received')
-    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run()
