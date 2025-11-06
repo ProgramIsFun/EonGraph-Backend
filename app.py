@@ -155,6 +155,19 @@ def api_create_node():
             }, 200
 
 # update
+
+def update_color_of_all_nodes(db, data):
+    pass  # Placeholder for the actual implementation
+
+@app.route('/api/v0/update_color_of_all_nodes', methods=['POST'])
+def api_update_colors():
+    data = request.get_json()
+    db = get_db()
+    ppppp = update_color_of_all_nodes(db, data)
+    p(len(ppppp))
+    # Save JSON data if needed...
+    return {'message': 'success!'}, 200
+
 @app.route('/api/v0/update_position_of_all_nodes111', methods=['POST'])
 def api_update_positions():
     data = request.get_json()
