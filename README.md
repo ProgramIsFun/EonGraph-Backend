@@ -5,7 +5,7 @@ This branch is coming from https://github.com/ProgramIsFun/graphPythonBackend11/
 
 I basically take one folder of that branch and then make it azure compatible in this branch
 
-# how to develop 
+# how to develop
 
 you modify ipynb files and then convert them to python files using nbconvert.
 

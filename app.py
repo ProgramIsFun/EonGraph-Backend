@@ -16,10 +16,8 @@ from kkkkkk import update_position_of_all_node_772
 from kkkkkk import create_note_with_generate_id_and_position
 from example import get_specific_node_with_specific_id
 
-
 def p(*args):
     print(args)
-
 
 load_dotenv(find_dotenv())
 
@@ -29,11 +27,9 @@ FlaskJSON(app)
 
 api = Api(app, title='Neo4j Movie Demo API', api_version='0.0.10')
 
-
 @api.representation('application/json')
 def output_json(data, code, headers=None):
     return json_response(data_=data, headers_=headers, status_=code)
-
 
 def env(key, default=None, required=True):
     """
@@ -49,7 +45,6 @@ def env(key, default=None, required=True):
         if default or not required:
             return default
         raise RuntimeError("Missing required environment variable '%s'" % key)
-
 
 NEO4J_URI = 'neo4j+ssc://806970c7.databases.neo4j.io'
 NEO4J_USERNAME = 'neo4j'
@@ -143,15 +138,12 @@ class get_all_node_and_their_connections(Resource):
         try:
             p("get_all_node_and_their_connections")
             db = get_db()
-
-            # p(db)
             session = db
             oooo = get_all_node_and_their_connections13(session)
             return oooo
         except Exception as e:
             p('Error occurred while fetching nodes and connections:', str(e))
             return {'message': 'Error occurred', 'error': str(e)}, 500
-
 
 class update_position_of_all_nodes(Resource):
 
@@ -171,9 +163,6 @@ class update_position_of_all_nodes(Resource):
                 json.dump(data, file)
 
         return {'message': 'success!'}, 200
-
-
-
 
 class create_node(Resource):
 
@@ -238,10 +227,6 @@ class health(Resource):
         return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!',
 
                 }, 200
-
-
-
-
 
 # basic
 api.add_resource(health, '/health')
