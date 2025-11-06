@@ -8,3 +8,7 @@ NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 NEO4J_DATABASE = os.getenv("NEO4J_DATABASE")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+
+NODE_ID_ACCESSOR = "user_generate_id_7577777777"  # this value is just an example, you just need to make sure this property exist on all nodes
+
+

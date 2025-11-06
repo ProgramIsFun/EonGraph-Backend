@@ -10,14 +10,13 @@ from example import update_position_of_all_node
 from example import create_node_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
 from example import get_github_repositories,clear_all_caches,run_cypher_any
-from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NODE_ID_ACCESSOR
 from flasgger import Swagger, swag_from
 
 
 
 load_dotenv(find_dotenv())
 
-NODE_ID_ACCESSOR = "user_generate_id_7577777777"  # this value is just an example, you just need to make sure this property exist on all nodes
 
 def l(*args):
     print(args)
@@ -74,9 +73,6 @@ def env(key, default=None, required=True):
         raise RuntimeError(f"Missing required environment variable '{key}'")
 
 app.config['SECRET_KEY'] = "super secret guy"
-
-
-
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):
