@@ -132,6 +132,16 @@ def api_get_all_nodes():
         p('Error occurred while fetching nodes and connections:', str(e))
         return {'message': 'Error occurred', 'error': str(e)}, 500
 
+
+@app.route('/api/v0/get_all_github_repositories', methods=['GET'])
+def api_get_all_github_repositories():
+    # fetch github api
+    pass
+
+
+
+
+
 # create 
 
 @app.route('/api/v0/create_node77777777', methods=['POST'])
@@ -184,6 +194,10 @@ def api_delete_node():
     db = get_db()
     # ppppp=delete_node(db, n)
     return {'message': 'ok, no problem'}, 200
+
+
+
+
 
 
 if __name__ == '__main__':
