@@ -89,14 +89,18 @@ def close_db(error):
 def health():
     return {"message": "ok, no problem, version 1.0.0"}, 200
 
-@app.route('/docs/<path:path>', methods=['GET'])
-@app.route('/docs', methods=['GET'])
-def api_docs(path=None):
-    if not path:
-        path = 'index.html'
-    return send_from_directory('swaggerui', path)
-
 @app.route('/original')
+@swag_from({
+    'tags': ["general"],
+    'responses': {
+        200: {
+            'description': 'Serve original index.html',
+            'examples': {
+                "text/html": "<!DOCTYPE html>..."
+            }
+        }
+    }
+})
 def index():
     print('Request for index page received')
     return render_template('index.html')
@@ -104,6 +108,40 @@ def index():
 
 # run any cypher
 @app.route('/api/v0/run_any_cypher', methods=['POST', 'OPTIONS'])
+@swag_from({
+    'tags': ["cypher"],
+    'parameters': [
+        {
+            'name': 'data',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'data': {
+                        'type': 'string',
+                        'example': 'MATCH (n) RETURN n LIMIT 5'
+                    }
+                },
+                'required': ['data']
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Cypher query executed successfully',
+            'examples': {
+                "application/json": {"results": []}
+            }
+        },
+        400: {
+            'description': 'Bad Request',
+            'examples': {
+                "application/json": {"message": "No data provided"}
+            }
+        }
+    }
+})
 def api_run_any_cypher():
     db = get_db()
     if request.method == 'OPTIONS':
