@@ -137,7 +137,7 @@ class ApiDocs(Resource):
 
 
 
-class return_all_nodes111(Resource):
+class return_all_nodes(Resource):
     def get(self):
 
         try:
@@ -156,7 +156,7 @@ class return_all_nodes111(Resource):
 
 
 
-class update_position_of_all_nodes111(Resource):
+class update_position_of_all_nodes(Resource):
 
     def post(self):
         data = request.get_json()
@@ -181,7 +181,7 @@ class update_position_of_all_nodes111(Resource):
 file_path = 'example.txt'
 
 
-class create_no77777777(Resource):
+class create_node(Resource):
 
     def post(self):
         data = request.get_json()
@@ -223,7 +223,7 @@ class create_no77777777(Resource):
                 }, 200
 
 
-class delete_node1(Resource):
+class delete_node(Resource):
 
     def post(self):
         data = request.get_json()
@@ -243,16 +243,13 @@ class delete_node1(Resource):
 
 
 
-class dddddddd(Resource):
-
+class health(Resource):
     def get(self):
-        
-
         return {'message': 'success!!!!!!!!!!!!!!!!!!!!!!!!!',
 
                 }, 200
 
-api.add_resource(dddddddd, '/health')
+api.add_resource(health, '/health')
 
 
 
@@ -263,11 +260,11 @@ api.add_resource(ApiDocs, '/docs', '/docs/<path:path>')
 
 # update
 
-api.add_resource(update_position_of_all_nodes111, '/api/v0/update_position_of_all_nodes111')
-api.add_resource(create_no77777777, '/api/v0/create_node77777777')
-api.add_resource(delete_node1, '/api/v0/delete_node')
+api.add_resource(update_position_of_all_nodes, '/api/v0/update_position_of_all_nodes111')
+api.add_resource(create_node, '/api/v0/create_node77777777')
+api.add_resource(delete_node, '/api/v0/delete_node')
 
-api.add_resource(return_all_nodes111, '/api/v0/return_all_nodes111')
+api.add_resource(return_all_nodes, '/api/v0/return_all_nodes111')
 
 
 
