@@ -33,7 +33,7 @@ set FLASK_ENV=development
 
 4.
 
-flask run
+flask run --port=5007
 
 
 ref : 
