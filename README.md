@@ -1,5 +1,7 @@
 This branch is coming from https://github.com/ProgramIsFun/graphPythonBackend11/tree/master.  I basically take one folder of that branch and then make it azure compatible in this branch
 
+If you want to deploy I suggest using vs code extension
+
 
 # Deploy a Python (Flask) web app to Azure App Service - Sample Application
 
