@@ -298,17 +298,10 @@ api.add_resource(ApiDocs, '/docs', '/docs/<path:path>')
 
 api.add_resource(return_all_nodes111, '/api/v0/return_all_nodes111')
 
-# api.add_resource(Register, '/api/v0/register')
-# api.add_resource(Login, '/api/v0/login')
-# 111111111111111111111111111111111111111
 api.add_resource(update_position_of_all_nodes111, '/api/v0/update_position_of_all_nodes111')
 
 api.add_resource(create_no77777777, '/api/v0/create_node77777777')
 api.add_resource(delete_node1, '/api/v0/delete_node')
-
-# 1/0
-# api.add_resource(UserMe, '/api/v0/users/me')
-
 
 
 
