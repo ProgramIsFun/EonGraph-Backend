@@ -477,9 +477,13 @@ def update_position_of_all_node(session,data,prefix):
 
     p("update_position_of_all_node called with data:", data)
 
-    output_data = []
+    required_props = [NODE_ID_ACCESSOR, "X", "Y", "Z"]
 
+    output_data = []
     for item in data:
+        missing_props = [k for k in required_props if k not in item]
+        if missing_props:
+            raise ValueError(f"Missing required properties {missing_props} in item: {item}")
         # Add a new dictionary to output_data with the flattened structure.
         output_data.append({
             "ID": item[NODE_ID_ACCESSOR],

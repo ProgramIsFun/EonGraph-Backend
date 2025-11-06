@@ -466,9 +466,10 @@ def api_update_colors():
 })
 def api_update_positions():
     data = request.get_json()
-    prefix="GeneralPosition"
+    data_points=data["data_points"]
+    prefix=data["prefix"]
     db = get_db()
-    result = update_position_of_all_node(db, data, prefix)
+    result = update_position_of_all_node(db, data_points, prefix)
     l(len(result))
     return {'message': 'success.'}, 200
 
