@@ -128,32 +128,6 @@ def set_user(sender, **extra):
 request_started.connect(set_user, app)
 
 
-def login_required(f):
-    @wraps(f)
-    def wrapped(*args, **kwargs):
-        auth_header = request.headers.get('Authorization')
-        if not auth_header:
-            return {'message': 'no authorization provided'}, 401
-        return f(*args, **kwargs)
-
-    return wrapped
-
-
-def hash_password(username, password):
-    if sys.version[0] == 2:
-        s = '{}:{}'.format(username, password)
-    else:
-        s = '{}:{}'.format(username, password).encode('utf-8')
-    return hashlib.sha256(s).hexdigest()
-
-
-def hash_avatar(username):
-    if sys.version[0] == 2:
-        s = username
-    else:
-        s = username.encode('utf-8')
-    return hashlib.md5(s).hexdigest()
-
 
 class ApiDocs(Resource):
     def get(self, path=None):
