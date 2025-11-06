@@ -811,17 +811,19 @@ def remove_all():
 # In[ ]:
 
 
-def delete_note_with_specific_id(tx, id):
-    p("delete_note_with_specific_id called with id:", id)
-    # Query that matches any node with the specific ID, deletes it, and counts the deleted nodes.
-    query = f'''
-    MATCH (n)
-    WHERE n.user_generate_id_7577777777 = "{id}"
-    DETACH DELETE n
-    RETURN count(n) as deletedCount
-    '''
-    result = tx.run(query)
-    return result.single()[0]  # returns the count of deleted nodes
+def delete_node_with_specific_id(tx, id):
+    print("delete_node_with_specific_id called with id:", id)
+    query = (
+        f'''
+        MATCH (n)
+        WHERE n.{NODE_ID_ACCESSOR} = $id
+        DETACH DELETE n
+        RETURN count(n) as deletedCount
+        '''
+    )
+    result = tx.run(query, id=id)
+    record = result.single()
+    return record["deletedCount"] if record else 0  # returns count of deleted nodes
 
 
 # #### delete_note_with_specific_idand_label
