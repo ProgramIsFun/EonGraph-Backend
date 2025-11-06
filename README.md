@@ -1,13 +1,11 @@
 ## 🚀 development cycle
 For easier development
 
-1. you Edit `.ipynb` (Jupyter notebook) files, if any
-2. then convert them to Python scripts for git commit. 
-   
 | Step | Command                                               | Description                       |
 |------|------------------------------------------------------|-----------------------------------|
 | 1    | `pip install nbconvert`                              | Install nbconvert utility         |
-| 2    | `jupyter nbconvert example.ipynb --to python`        | Convert notebook to Python script |
+| 2 | you Edit `.ipynb` (Jupyter notebook) files, if any | |
+| 3    | `jupyter nbconvert example.ipynb --to python`        | Convert notebook to Python script |
 
 ---
 
