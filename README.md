@@ -10,7 +10,7 @@
 - [references](#references)
 
 
-## 🏃‍♂️ How to Run
+## How to Run
 
 Set up your local environment to run the application.
 
@@ -21,7 +21,7 @@ Set up your local environment to run the application.
 | 3    | <pre>set FLASK_APP=app.py<br>set FLASK_ENV=development</pre>    | Set Flask environment variables        |
 | 4    | `flask run --port=5007`                                         | Start the Flask development server     |
 
-## 🚀 Development cycle
+## Development cycle
 
 For easier development
 
@@ -31,7 +31,7 @@ For easier development
 | 2    | You Edit `.ipynb` (Jupyter notebook) files, if any   |                                   |
 | 3    | `jupyter nbconvert example.ipynb --to python`        | Convert notebook to Python script |
 
-## 🌍 How to Deploy
+## How to Deploy
 
 Deploy on **Azure App Service** for production.  
 
