@@ -8,7 +8,13 @@ p=print
 import uuid
 
 
-# In[14]:
+# In[1]:
+
+
+from flask import jsonify
+
+
+# In[4]:
 
 
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN
@@ -24,7 +30,7 @@ session = driver_.session(database=NEO4J_DATABASE)
 # ## Helper Functions
 # 
 
-# In[4]:
+# In[5]:
 
 
 import os
@@ -75,36 +81,71 @@ def clear_all_caches(cache_dir='.'):
     return deleted
 
 
-# In[5]:
+# In[ ]:
 
 
 # return  <neo4j._sync.work.result.Result object at XXXXXXXXXX>
 def run_cypher_any(session , query):  
-
+    '''if MATCH (n)-[r]->(m) RETURN n, r, m,  the r will contains both node fields '''
     result= session.run(query)
-    return result
+    return result.data()
 
 
 # In[ ]:
 
 
-example_query="MATCH (n)-[r]->(m)"
+
+
+
+# In[ ]:
+
+
+# example_query="MATCH (n)-[r]->(m) RETURN n, r, m"
 # a=run_cypher_any(session, example_query)
 
 
-# In[8]:
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+# jsonify(a)
+
+
+# In[ ]:
 
 
 # records = [record.data() for record in a]
 
 
-# In[12]:
+# In[ ]:
 
 
-# records[0]
+# records[2]
 
 
-# In[15]:
+# In[ ]:
+
+
+# example_query='''MATCH (n {user_generate_id_7577777777: '9b6097ab-f834-4789-a542-ced4f9478cc5'})
+# SET n.custom123 = "hello world"
+# RETURN n
+# '''
+# a=run_cypher_any(session, example_query)
+# a
+
+
+# In[ ]:
+
+
+# a.data()
+
+
+# In[ ]:
 
 
 def get_all_node_and_their_connections(session):
@@ -114,7 +155,7 @@ def get_all_node_and_their_connections(session):
 # k= session.execute_read(get_all_node_and_their_connections)
 
 
-# In[18]:
+# In[ ]:
 
 
 # k[0]["r"]
