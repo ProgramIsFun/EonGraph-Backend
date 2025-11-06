@@ -225,21 +225,24 @@ class health(Resource):
                 }, 200
 
 
+
+
+
 # basic
 api.add_resource(health, '/health')
 api.add_resource(ApiDocs, '/docs', '/docs/<path:path>')
+
+# read
+api.add_resource(get_all_node_and_their_connections, '/api/v0/return_all_nodes111')
+
 
 # update
 api.add_resource(update_position_of_all_nodes, '/api/v0/update_position_of_all_nodes111')
 api.add_resource(create_node, '/api/v0/create_node77777777')
 api.add_resource(delete_node, '/api/v0/delete_node')
 
-# read
-api.add_resource(get_all_node_and_their_connections, '/api/v0/return_all_nodes111')
 
 from flask import render_template
-
-
 @app.route('/original')
 def index():
     print('Request for index page received')
