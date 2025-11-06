@@ -11,6 +11,7 @@ from example import get_all_node_and_their_connections13
 from example import update_position_of_all_node_772
 from example import create_note_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE
 
 def p(*args):
     print(args)
@@ -35,10 +36,7 @@ def env(key, default=None, required=True):
         raise RuntimeError(f"Missing required environment variable '{key}'")
 
 app.config['SECRET_KEY'] = "super secret guy"
-NEO4J_URI = 'neo4j+ssc://806970c7.databases.neo4j.io'
-NEO4J_USERNAME = 'neo4j'
-NEO4J_PASSWORD = "ntVYbR1v-6OrHleeKhs7WC22VRXmpM7fPbhNddc3QRw"
-NEO4J_DATABASE = "neo4j"
+
 
 # --- NEO4J SETUP ---
 
