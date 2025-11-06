@@ -13,21 +13,22 @@ from example import get_github_repositories,clear_all_caches,run_cypher_any
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NODE_ID_ACCESSOR
 from flasgger import Swagger, swag_from
 
-
-
-load_dotenv(find_dotenv())
-
-
 def l(*args):
     print(args)
 
-# --- NEO4J SETUP ---
+l("Loading environment variables for local development...")
+load_dotenv(find_dotenv())
+l("Environment variables loaded.")
 
+
+l("Neo4j driver creating...")
 driver = GraphDatabase.driver(
     NEO4J_URI, auth=basic_auth(NEO4J_USERNAME, str(NEO4J_PASSWORD))
 )
+l("Neo4j driver created.")
 
-# check if node_id_accessor exist on all nodes, if any node does not have it, exit with error
+
+l("check if node_id_accessor exist on all nodes, if any node does not have it, exit with error")
 with driver.session() as session:
     result = session.run(
         f"MATCH (n) WHERE n.{NODE_ID_ACCESSOR} IS NULL RETURN count(n) AS count"
@@ -39,11 +40,19 @@ with driver.session() as session:
     else:
         l(f"All nodes have the '{NODE_ID_ACCESSOR}' property. Check is complete. Moving on...")
 
-# --- FLASK SETUP ---
 
+
+l("Flask app creating...")
 app = Flask(__name__)
+l("Flask app created.")
+
+l("Enabling CORS...")
 CORS(app, resources={r"/*": {"origins": "*"}})
+l("CORS enabled.")
+
+l("Initializing FlaskJSON...")
 FlaskJSON(app)
+l("FlaskJSON initialized.")
 
 # Initialize Flasgger with your Flask app
 swagger = Swagger(app)
