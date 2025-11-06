@@ -1,19 +1,16 @@
+
+# dev logs
+
 This branch is coming from https://github.com/ProgramIsFun/graphPythonBackend11/tree/master.  
 
 I basically take one folder of that branch and then make it azure compatible in this branch
 
-If you want to deploy I suggest using vs code extension
+# how to develop 
 
-
-
+you modify ipynb files and then convert them to python files using nbconvert.
 
 pip install nbconvert
 jupyter nbconvert example.ipynb --to python
-
-
-
-
-
 
 # how to run this code
 
@@ -27,6 +24,10 @@ set FLASK_ENV=development
 flask run
 
 https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli
+
+# how to deploy this code
+
+I suggest using vs code extension
 
 
 
