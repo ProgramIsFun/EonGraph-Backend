@@ -47,7 +47,7 @@ app = Flask(__name__)
 l("Flask app created.")
 
 l("Enabling CORS...")
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 l("CORS enabled.")
 
 l("Initializing FlaskJSON...")
@@ -186,7 +186,7 @@ def api_run_any_cypher():
 # read
 
 # using post because we might have sensitive data to send along in the future
-@app.route('/api/v0/get_specific_node_with_specific_id', methods=['POST', 'OPTIONS'])
+@app.route('/api/v0/get_specific_node_with_specific_id', methods=['POST'])
 @swag_from({
     'tags': ["nodes"],
     'parameters': [
@@ -228,8 +228,6 @@ def api_run_any_cypher():
     }
 })
 def api_get_specific_node():
-    if request.method == 'OPTIONS':
-        return {}, 200
     data = request.get_json()
     l('get_specific_node_with_specific_id', data)
     node_id = data['nodeIdAccess']
