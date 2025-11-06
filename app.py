@@ -66,6 +66,7 @@ def handle_exception(e):
         "success": False,
         "error": str(e)
     }
+    l("returning error response:", response)
     return jsonify(response), 500
 
 # --- ENVIRONMENT & CONFIG ---
@@ -465,10 +466,13 @@ def api_update_colors():
     }
 })
 def api_update_positions():
+    print("api_update_positions called")
     data = request.get_json()
     data_points=data["data_points"]
+    l("data_points", data_points)
     prefix=data["prefix"]
-    
+    l("prefix", prefix)
+
     # only 'WebApp' is supported for now for prefix
     if prefix != "WebApp":
         return {'message': 'Only "WebApp" prefix is supported for now.'}, 400
