@@ -62,10 +62,23 @@ def env(key, default=None, required=True):
         raise RuntimeError("Missing required environment variable '%s'" % key)
 
 
+NEO4J_URI='neo4j+s://806970c7.databases.neo4j.io'
+NEO4J_USERNAME='neo4j'
+NEO4J_PASSWORD="ntVYbR1v-6OrHleeKhs7WC22VRXmpM7fPbhNddc3QRw"
+NEO4J_DATABASE="neo4j"
+
+
+
+
+
 SECRET_KEY="super secret guy"
-MOVIE_DATABASE_USERNAME="neo4j"
-MOVIE_DATABASE_PASSWORD="zFi_GDAUKlbIi-GOzgCibPya_kiVku5BXReI1A25Ifw"
-MOVIE_DATABASE_URL="neo4j+s://b8cec73f.databases.neo4j.io"
+# MOVIE_DATABASE_USERNAME="neo4j"
+# MOVIE_DATABASE_PASSWORD="zFi_GDAUKlbIi-GOzgCibPya_kiVku5BXReI1A25Ifw"
+# MOVIE_DATABASE_URL="neo4j+s://b8cec73f.databases.neo4j.io"
+MOVIE_DATABASE_USERNAME= NEO4J_USERNAME
+MOVIE_DATABASE_PASSWORD= NEO4J_PASSWORD
+MOVIE_DATABASE_URL= NEO4J_URI
+
 
 # DATABASE_USERNAME = env('MOVIE_DATABASE_USERNAME')
 # DATABASE_PASSWORD = env('MOVIE_DATABASE_PASSWORD')
@@ -167,14 +180,17 @@ class return_all_nodes111(Resource):
     def get(self):
 
         try:
+            p("get_all_node_and_their_connections13")
             db = get_db()
+            p("ggggggggggggggggggggggggggggggg")
+            # p(db)
             session = db
             p("return_all_nodes1112222222222222222222222222222222222222222222222222222222222222")
             oooo=get_all_node_and_their_connections13(session)
             return oooo
         except Exception as e:
-            p('Neo4jError:', e)
-            return {'message': 'Neo4jError occurred', 'error': str(e)}, 500
+            p('Error111111111111111111111111111:', e)
+            return {'message': 'Error occurred', 'error': str(e)}, 500
 
 
 
