@@ -4,6 +4,18 @@ I basically take one folder of that branch and then make it azure compatible in 
 
 If you want to deploy I suggest using vs code extension
 
+# how to run this code
+
+Install a virtual environment possibly using the VS code
+
+pip install -r requirements.txt
+
+flask run
+
+https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli
+
+
+
 
 # Deploy a Python (Flask) web app to Azure App Service - Sample Application
 
