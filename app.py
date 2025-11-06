@@ -256,8 +256,22 @@ def api_get_all_nodes():
         l('Error occurred while fetching nodes and connections:', str(e))
         return {'message': 'Error occurred', 'error': str(e)}, 500
 
+
+
+
 # get the id property that exist on all the node
-@app.route('/api/v0/get_all_node_ids', methods=['GET'])
+@app.route('/api/v0/get_nodeIdAccessor', methods=['GET'])
+@swag_from({
+    'tags': ["nodes"],
+    'responses': {
+        200: {
+            'description': 'Node ID accessor retrieved successfully',
+            'examples': {
+                "application/json": {"id_ref": "example_id_value"}
+            }
+        }
+    }
+})
 def api_get_all_node_ids():
     application_ids = NODE_ID_ACCESSOR
     return jsonify({"id_ref": application_ids}), 200
