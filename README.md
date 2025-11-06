@@ -4,6 +4,17 @@ I basically take one folder of that branch and then make it azure compatible in 
 
 If you want to deploy I suggest using vs code extension
 
+
+
+
+pip install nbconvert
+jupyter nbconvert example.ipynb --to python
+
+
+
+
+
+
 # how to run this code
 
 Install a virtual environment possibly using the VS code

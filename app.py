@@ -18,6 +18,7 @@ from neo4j import GraphDatabase, basic_auth
 from kkkkkk import get_all_node_and_their_connections13
 from kkkkkk import update_position_of_all_node_772
 from kkkkkk import create_note_with_generate_id_and_position
+from example import get_specific_node_with_specific_id
 
 
 def p(*args):
@@ -121,6 +122,21 @@ class ApiDocs(Resource):
             path = 'index.html'
         return send_from_directory('swaggerui', path)
 
+
+class get_specific_node_with_specific_id1(Resource):
+    def get(self):
+        data = request.get_json()
+        p('get_specific_node_with_specific_id1')
+        p(data)
+        node_id = data['id']
+        db = get_db()
+
+        oooo=get_specific_node_with_specific_id(db, node_id)
+
+        if not oooo:
+            return {'message': 'Node not found'}, 404
+
+        return {'node': oooo}, 200
 
 class get_all_node_and_their_connections(Resource):
     def get(self):
@@ -233,6 +249,7 @@ api.add_resource(health, '/health')
 api.add_resource(ApiDocs, '/docs', '/docs/<path:path>')
 
 # read
+api.add_resource(get_specific_node_with_specific_id1, '/api/v0/get_specific_node_with_specific_id')
 api.add_resource(get_all_node_and_their_connections, '/api/v0/return_all_nodes111')
 
 
