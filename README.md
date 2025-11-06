@@ -1,58 +1,52 @@
-# how to develop
+## 🚀 How to Develop
 
-you modify ipynb files and then convert them to python files using nbconvert.
+Edit your `.ipynb` (Jupyter notebook) files, then convert them to Python scripts for deployment:
 
-1. 
+| Step | Command                                               | Description                       |
+|------|------------------------------------------------------|-----------------------------------|
+| 1    | `pip install nbconvert`                              | Install nbconvert utility         |
+| 2    | `jupyter nbconvert example.ipynb --to python`        | Convert notebook to Python script |
 
-pip install nbconvert
+---
 
-2.
+## 🏃‍♂️ How to Run
 
-jupyter nbconvert example.ipynb --to python
+Set up your local environment to run the application.
 
-# how to run this code
+| Step | Command                                                         | Description                            |
+|------|-----------------------------------------------------------------|----------------------------------------|
+| 1    | _Create and activate a virtual environment (e.g., via VS Code)_ | Isolate project dependencies          |
+| 2    | `pip install -r requirements.txt`                               | Install dependencies                   |
+| 3    | <pre>set FLASK_APP=app.py<br>set FLASK_ENV=development</pre>    | Set Flask environment variables        |
+| 4    | `flask run --port=5007`                                         | Start the Flask development server     |
 
-1. 
+---
 
-Install a virtual environment possibly using the VS code
+## 🌍 How to Deploy
 
-2. 
+Deploy on **Azure App Service** for production.  
+Full docs: [Azure Python Quickstart](https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli)
 
-pip install -r requirements.txt
+### 1. Create App Service
+- Use the [Azure Portal](https://portal.azure.com) to create a free App Service for your web app.
 
-3. 
+### 2. Deploy from VS Code
 
-set FLASK_APP=app.py
-set FLASK_ENV=development
+| Step                   | Description                                              |
+|------------------------|---------------------------------------------------------|
+| VS Code Deployment     | Right-click on your resource, select `Deploy to Web App…`|
 
-4.
+### 3. Add Environment Variables (e.g., for secrets)
 
-flask run --port=5007
+| Step | Command                                                                                                                                      | Description                                 |
+|------|---------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|
+| 1    | `az config set core.enable_broker_on_windows=false`                                                                                         | Configure Azure CLI for Windows             |
+| 2    | `az login`                                                                                                                                  | Authenticate with Azure                     |
+| 3    | `az webapp config appsettings set --name <AppServiceName> --resource-group <ResourceGroupName> --settings MY_VARIABLE=MyValue` | Set env vars for your App Service           |
 
+---
 
-ref : 
-
-https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli
-
-
-
-# how to deploy this code
-1. azure app service
-
-use website to create a free service 
-
-2. deploy 
-
-using vs code extension right click on the created service, deploy to web app...
-
-3. to add env to service
-
-az config set core.enable_broker_on_windows=false
-
-az login 
-
-az webapp config appsettings set --name <AppServiceName> --resource-group <ResourceGroupName> --settings MY_VARIABLE=MyValue
-
+_Reference: [Azure Flask Quickstart](https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli)_
 
 # principles in neo4j
 
