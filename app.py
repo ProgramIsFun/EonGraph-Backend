@@ -1,8 +1,7 @@
 import os
 import ast
-import re
 from dotenv import load_dotenv, find_dotenv
-from flask import Flask, g, request, send_from_directory, abort, render_template, jsonify
+from flask import Flask, g, request, send_from_directory, render_template, jsonify
 from flask_cors import CORS
 from flask_json import FlaskJSON
 from neo4j import GraphDatabase, basic_auth
