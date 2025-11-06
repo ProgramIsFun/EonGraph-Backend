@@ -177,17 +177,56 @@ def api_run_any_cypher():
 # read
 
 @app.route('/api/v0/get_specific_node_with_specific_id', methods=['POST', 'OPTIONS'])
+@swag_from({
+    'tags': ["nodes"],
+    'parameters': [
+        {
+            'name': 'data',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'nodeIdAccess': {
+                        'type': 'string',
+                        'example': '7577777777'
+                    }
+                },
+                'required': ['nodeIdAccess']
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Node retrieved successfully',
+            'examples': {
+                "application/json": {"node": {}}
+            }
+        },
+        400: {
+            'description': 'Bad Request',
+            'examples': {
+                "application/json": {"message": "No data provided"}
+            }
+        },
+        404: {
+            'description': 'Node not found',
+            'examples': {
+                "application/json": {"message": "Node not found"}
+            }
+        }
+    }
+})
 def api_get_specific_node():
     if request.method == 'OPTIONS':
         return {}, 200
     data = request.get_json()
     l('get_specific_node_with_specific_id', data)
     node_id = data['nodeIdAccess']
-    oooo = get_specific_node_with_specific_id(node_id)
-    l("oooo111", oooo)
-    if not oooo:
+    nodeObject = get_specific_node_with_specific_id(node_id)
+    if not nodeObject:
         return {'message': 'Node not found'}, 404
-    return {'node': oooo}, 200
+    return {'node': nodeObject}, 200
 
 @app.route('/api/v0/return_all_nodes111', methods=['GET'])
 def api_get_all_nodes():
