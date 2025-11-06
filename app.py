@@ -7,7 +7,7 @@ from flask_cors import CORS
 from flask_json import FlaskJSON, json_response
 from neo4j import GraphDatabase, basic_auth
 
-from example import get_all_node_and_their_connections_all
+from example import get_all_nodes__and__their_connections
 from example import update_position_of_all_node
 from example import create_node_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
@@ -145,7 +145,7 @@ def api_get_all_nodes():
     try:
         p("get_all_node_and_their_connections")
         db = get_db()
-        oooo = get_all_node_and_their_connections_all(db)
+        oooo = get_all_nodes__and__their_connections(db)
         return jsonify(oooo)
     except Exception as e:
         p('Error occurred while fetching nodes and connections:', str(e))
