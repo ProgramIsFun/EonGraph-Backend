@@ -489,13 +489,13 @@ def create_node_tx(tx, name, id8):
     return record["node_id"]
 
 
-# #### create_note_with_generate_id
+# #### create_node_with_generate_id
 
 # In[ ]:
 
 
-def create_note_with_generate_id(session, name):
-    p("create_note_with_generate_id called with name:", name)
+def create_node_with_generate_id(session, name):
+    p("create_node_with_generate_id called with name:", name)
     node_id = session.execute_write(create_node_tx, name, str(uuid.uuid4()))
     return node_id
 
@@ -522,8 +522,8 @@ def create_node_tx_with_position(tx, name, id8, x, y, z):
 # In[ ]:
 
 
-def create_note_with_generate_id_and_position(session, name, x, y, z):
-    p("create_note_with_generate_id_and_position called with name:", name, "x:", x, "y:", y, "z:", z)
+def create_node_with_generate_id_and_position(session, name, x, y, z):
+    p("create_node_with_generate_id_and_position called with name:", name, "x:", x, "y:", y, "z:", z)
     node_id = session.execute_write(create_node_tx_with_position, name, str(uuid.uuid4()), x, y, z)
     return node_id
 
@@ -548,7 +548,7 @@ def testing_constraint(session):
 # In[ ]:
 
 
-# node_id = create_note_with_generate_id(session, testing_name_777)
+# node_id = create_node_with_generate_id(session, testing_name_777)
 # 
 
 
