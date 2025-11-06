@@ -1,14 +1,3 @@
-## 🚀 development cycle
-For easier development
-
-| Step | Command                                               | Description                       |
-|------|------------------------------------------------------|-----------------------------------|
-| 1    | `pip install nbconvert`                              | Install nbconvert utility         |
-| 2 | you Edit `.ipynb` (Jupyter notebook) files, if any | |
-| 3    | `jupyter nbconvert example.ipynb --to python`        | Convert notebook to Python script |
-
----
-
 ## 🏃‍♂️ How to Run
 
 Set up your local environment to run the application.
@@ -20,12 +9,20 @@ Set up your local environment to run the application.
 | 3    | <pre>set FLASK_APP=app.py<br>set FLASK_ENV=development</pre>    | Set Flask environment variables        |
 | 4    | `flask run --port=5007`                                         | Start the Flask development server     |
 
----
+## 🚀 Development cycle
+For easier development
+
+| Step | Command                                               | Description                       |
+|------|------------------------------------------------------|-----------------------------------|
+| 1    | `pip install nbconvert`                              | Install nbconvert utility         |
+| 2 | you Edit `.ipynb` (Jupyter notebook) files, if any | |
+| 3    | `jupyter nbconvert example.ipynb --to python`        | Convert notebook to Python script |
+
+
 
 ## 🌍 How to Deploy
 
 Deploy on **Azure App Service** for production.  
-Full docs: [Azure Python Quickstart](https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli)
 
 ### 1. Create App Service
 - Use the [Azure Portal](https://portal.azure.com) to create a free App Service for your web app.
@@ -44,11 +41,8 @@ Full docs: [Azure Python Quickstart](https://learn.microsoft.com/en-us/azure/app
 | 2    | `az login`                                                                                                                                  | Authenticate with Azure                     |
 | 3    | `az webapp config appsettings set --name <AppServiceName> --resource-group <ResourceGroupName> --settings MY_VARIABLE=MyValue` | Set env vars for your App Service           |
 
----
 
 _Reference: [Azure Flask Quickstart](https://learn.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cazure-cli%2Cazure-cli-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli)_
-
-
 
 # dev logs
 
