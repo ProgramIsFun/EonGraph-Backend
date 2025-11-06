@@ -120,7 +120,9 @@ def api_run_any_cypher():
         return {'message': 'Empty cypher query'}, 400
     result = run_cypher_any(db,cypher_query)
     p("result", result)
-    return jsonify(result), 200
+    jsonified= jsonify(result)
+    p("jsonified", jsonified)
+    return jsonified,200
 
 
 # read
