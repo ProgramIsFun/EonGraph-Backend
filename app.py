@@ -158,7 +158,6 @@ class update_position_of_all_nodes(Resource):
         return {'message': 'success!'}, 200
 
 
-file_path = 'example.txt'
 
 
 class create_node(Resource):
@@ -179,20 +178,18 @@ class create_node(Resource):
 
             ppppp1 = create_note_with_generate_id_and_position(db, n, x, y, z)
 
-            # Open the file in append mode and write the string
-            with open(file_path, 'a') as file:
-                file.write(ppppp1)
+            save=0
+            if save:
+
+                file_path = 'example.txt'
+                # Open the file in append mode and write the string
+                with open(file_path, 'a') as file:
+                    file.write(ppppp1)
 
             ppppp = {
                 "id": ppppp1,
                 "name": n
 
-            }
-        else:
-            ppppp1 = str(uuid.uuid4())
-            ppppp = {
-                "id": ppppp1,
-                "name": n
             }
 
         return {'message': 'qqqqqqqqqqqqqq',
