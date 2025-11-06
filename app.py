@@ -1,3 +1,5 @@
+
+
 import binascii
 import hashlib
 import os
@@ -62,7 +64,7 @@ def env(key, default=None, required=True):
         raise RuntimeError("Missing required environment variable '%s'" % key)
 
 
-NEO4J_URI='neo4j+s://806970c7.databases.neo4j.io'
+NEO4J_URI='neo4j+ssc://806970c7.databases.neo4j.io'
 NEO4J_USERNAME='neo4j'
 NEO4J_PASSWORD="ntVYbR1v-6OrHleeKhs7WC22VRXmpM7fPbhNddc3QRw"
 NEO4J_DATABASE="neo4j"
