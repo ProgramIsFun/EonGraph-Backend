@@ -42,7 +42,7 @@ session = driver_.session(database=NEO4J_DATABASE)
 # ## Helper Functions
 # 
 
-# In[5]:
+# In[ ]:
 
 
 import os
@@ -473,31 +473,30 @@ def _get_constraints(tx):
 # In[ ]:
 
 
-def update_position_of_all_node(session,d,mode):
+def update_position_of_all_node(session,data,prefix):
 
-    p("update_position_of_all_node called with data:", d)
+    p("update_position_of_all_node called with data:", data)
 
     output_data = []
 
-    for item in d:
+    for item in data:
         # Add a new dictionary to output_data with the flattened structure.
         output_data.append({
-            "ID": item["ID"],
-            "X": item["unreal_engine_location_728"]["X"],
-            "Y": item["unreal_engine_location_728"]["Y"],
-            "Z": item["unreal_engine_location_728"]["Z"]
+            "ID": item[NODE_ID_ACCESSOR],
+            "X": item["X"],
+            "Y": item["Y"],
+            "Z": item["Z"]
         })
-
 
     def update_nodes(tx, data):
         query = (
             f"""
             UNWIND $data AS item
             MATCH (n {{{NODE_ID_ACCESSOR}: item.ID}})
-            SET n.ue_location_X = item.X,
-                n.ue_location_Y = item.Y,
-                n.ue_location_Z = item.Z
-            RETURN n.{NODE_ID_ACCESSOR} AS node_id, n.ue_location_X, n.ue_location_Y, n.ue_location_Z
+            SET n.{prefix}_X = item.X,
+                n.{prefix}_Y = item.Y,
+                n.{prefix}_Z = item.Z
+            RETURN n.{NODE_ID_ACCESSOR} AS node_id, n.{prefix}_X AS X, n.{prefix}_Y AS Y, n.{prefix}_Z AS Z
             """
         )
         result = tx.run(query, data=data)

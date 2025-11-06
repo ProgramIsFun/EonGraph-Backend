@@ -466,10 +466,10 @@ def api_update_colors():
 })
 def api_update_positions():
     data = request.get_json()
+    prefix="GeneralPosition"
     db = get_db()
-    ppppp = update_position_of_all_node(db, data)
-    l(len(ppppp))
-    # Save JSON data if needed...
+    result = update_position_of_all_node(db, data, prefix)
+    l(len(result))
     return {'message': 'success.'}, 200
 
 # delete
