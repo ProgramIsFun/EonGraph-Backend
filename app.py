@@ -368,6 +368,40 @@ def api_create_node():
 
 # update
 @app.route('/api/v0/update_color_of_all_nodes', methods=['POST'])
+@swag_from({
+    'tags': ["nodes"],
+    'parameters': [
+        {
+            'name': 'data',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'color': {
+                        'type': 'string',
+                        'example': '#FF5733'
+                    }
+                },
+                'required': ['color']
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Node colors updated successfully',
+            'examples': {
+                "application/json": {"message": "success."}
+            }
+        },
+        400: {
+            'description': 'Bad Request',
+            'examples': {
+                "application/json": {"message": "No data provided"}
+            }
+        }
+    }
+})
 def api_update_colors():
     data = request.get_json()
     db = get_db()
@@ -387,6 +421,40 @@ def api_update_positions():
 
 # delete
 @app.route('/api/v0/delete_node', methods=['POST'])
+@swag_from({
+    'tags': ["nodes"],
+    'parameters': [
+        {
+            'name': 'data',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'id': {
+                        'type': 'string',
+                        'example': 'node_id_to_delete'
+                    }
+                },
+                'required': ['id']
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Node deleted successfully',
+            'examples': {
+                "application/json": {"message": "ok, no problem"}
+            }
+        },
+        400: {
+            'description': 'Bad Request',
+            'examples': {
+                "application/json": {"message": "No data provided"}
+            }
+        }
+    }
+})
 def api_delete_node():
     data = request.get_json()
     l('delete_node', data)
@@ -397,6 +465,17 @@ def api_delete_node():
 
 # clear_all_caches
 @app.route('/api/v0/clear_all_caches', methods=['POST'])
+@swag_from({
+    'tags': ["general"],
+    'responses': {
+        200: {
+            'description': 'Cache cleared successfully',
+            'examples': {
+                "application/json": {"message": "Cleared X cache files."}
+            }
+        }
+    }
+})
 def api_clear_all_caches():
     deleted_count = clear_all_caches()
     return {'message': f'Cleared {deleted_count} cache files.'}, 200
