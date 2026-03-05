@@ -14,6 +14,10 @@
 
 Set up your local environment to run the application.
 
+**Python Version:**
+- Local development (Windows 11): Python 3.13.12
+- Azure deployment: Python 3.13
+
 | Step | Command                                                         | Description                            |
 |------|-----------------------------------------------------------------|----------------------------------------|
 | 1    | _Create and activate a virtual environment (e.g., via VS Code)_ | Isolate project dependencies          |
