@@ -22,7 +22,17 @@ Set up your local environment to run the application.
 |------|-----------------------------------------------------------------|----------------------------------------|
 | 1    | _Create and activate a virtual environment (e.g., via VS Code)_ | Isolate project dependencies          |
 | 2    | `pip install -r requirements.txt`                               | Install dependencies                   |
-| 3    | `set FLASK_APP=app.py && set FLASK_ENV=development && flask run --port=5007` (CMD) <br> `$env:FLASK_APP="app.py"; $env:FLASK_ENV="development"; flask run --port=5007` (PowerShell) | Set environment variables and start Flask server |
+| 3    | Set environment variables and start Flask server |
+
+**CMD:**
+```
+set FLASK_APP=app.py && set FLASK_ENV=development && flask run --port=5007
+```
+
+**PowerShell:**
+```
+$env:FLASK_APP="app.py"; $env:FLASK_ENV="development"; flask run --port=5007
+```
 
 ## Development cycle
 
