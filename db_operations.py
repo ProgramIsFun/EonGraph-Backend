@@ -16,12 +16,16 @@ p = print
 
 # --- Helper Functions ---
 
-def get_cache_filename(key: str, cache_dir='.', ext='json'):
+CACHE_DIR = os.path.join(os.path.dirname(__file__), '.cache')
+os.makedirs(CACHE_DIR, exist_ok=True)
+
+
+def get_cache_filename(key: str, cache_dir=CACHE_DIR, ext='json'):
     """Generate filename from key (namespace for cache)."""
     hashed = hashlib.sha256(key.encode('utf-8')).hexdigest()
     return os.path.join(cache_dir, f'cache_{hashed}.{ext}')
 
-def load_cache_generic(key, expiry_seconds=600, cache_dir='.'):
+def load_cache_generic(key, expiry_seconds=600, cache_dir=CACHE_DIR):
     """Load cache by key. Returns None if not found or expired."""
     fn = get_cache_filename(key, cache_dir)
     if not os.path.exists(fn):
@@ -35,14 +39,14 @@ def load_cache_generic(key, expiry_seconds=600, cache_dir='.'):
         return None
     return cache['data']
 
-def save_cache_generic(key, data, cache_dir='.'):
+def save_cache_generic(key, data, cache_dir=CACHE_DIR):
     """Save cache data with the given key."""
     fn = get_cache_filename(key, cache_dir)
     cache = {'time': time.time(), 'data': data}
     with open(fn, 'w', encoding='utf-8') as f:
         json.dump(cache, f)
 
-def clear_all_caches(cache_dir='.'):
+def clear_all_caches(cache_dir=CACHE_DIR):
     """Remove all cache files created by the generic cache system."""
     pattern = os.path.join(cache_dir, 'cache_*.json')
     deleted = 0
@@ -178,7 +182,8 @@ def _get_constraints(tx):
 
 # --- GitHub ---
 
-def get_github_repositories(cache_expiry=60000000000000):
+def get_github_repositories(cache_expiry=3600):
+    """Fetch GitHub repos with 1-hour cache."""
     CACHE_KEY = 'github_user_repos_v1'
     repos = load_cache_generic(CACHE_KEY, expiry_seconds=cache_expiry)
     if repos is not None:

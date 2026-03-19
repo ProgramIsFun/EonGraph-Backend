@@ -5,12 +5,12 @@ from flask import Flask, g, request, render_template, jsonify
 from flask_cors import CORS
 from flask_json import FlaskJSON
 from neo4j import GraphDatabase, basic_auth
-from example import get_all_nodes__and__their_connections
-from example import update_position_of_all_node
-from example import create_node_with_generate_id_and_position
-from example import get_specific_node_with_specific_id, update_color_of_all_nodes
-from example import get_github_repositories, clear_all_caches, run_cypher_any
-from example import delete_node_with_specific_id
+from db_operations import get_all_nodes__and__their_connections
+from db_operations import update_position_of_all_node
+from db_operations import create_node_with_generate_id_and_position
+from db_operations import get_specific_node_with_specific_id, update_color_of_all_nodes
+from db_operations import get_github_repositories, clear_all_caches, run_cypher_any
+from db_operations import delete_node_with_specific_id
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NODE_ID_ACCESSOR
 from flasgger import Swagger, swag_from
 
@@ -64,7 +64,9 @@ def handle_exception(e):
     logger.error("Returning error response: %s", response)
     return jsonify(response), 500
 
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "super secret guy")
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+if not app.config['SECRET_KEY']:
+    raise RuntimeError("SECRET_KEY environment variable is not set. Refusing to start with an insecure default.")
 ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN")
 if not ADMIN_TOKEN:
     logger.warning("ADMIN_TOKEN is not set. The /api/v0/run_any_cypher endpoint will be inaccessible.")
