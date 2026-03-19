@@ -84,6 +84,9 @@ def env(key, default=None, required=True):
         raise RuntimeError(f"Missing required environment variable '{key}'")
 
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "super secret guy")
+ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN")
+if not ADMIN_TOKEN:
+    l("WARNING: ADMIN_TOKEN is not set. The /api/v0/run_any_cypher endpoint will be inaccessible.")
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):
@@ -137,6 +140,13 @@ def index():
     'tags': ["cypher"],
     'parameters': [
         {
+            'name': 'X-Admin-Token',
+            'in': 'header',
+            'required': True,
+            'type': 'string',
+            'description': 'Admin authentication token'
+        },
+        {
             'name': 'data',
             'in': 'body',
             'required': True,
@@ -159,6 +169,12 @@ def index():
                 "application/json": {"results": []}
             }
         },
+        401: {
+            'description': 'Unauthorized',
+            'examples': {
+                "application/json": {"message": "Unauthorized"}
+            }
+        },
         400: {
             'description': 'Bad Request',
             'examples': {
@@ -168,6 +184,9 @@ def index():
     }
 })
 def api_run_any_cypher():
+    token = request.headers.get('X-Admin-Token')
+    if not ADMIN_TOKEN or token != ADMIN_TOKEN:
+        return {'message': 'Unauthorized'}, 401
     db = get_db()
     data = request.get_json()
     l('run_any_cypher', data)
