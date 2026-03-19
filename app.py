@@ -10,6 +10,7 @@ from example import update_position_of_all_node
 from example import create_node_with_generate_id_and_position
 from example import get_specific_node_with_specific_id,update_color_of_all_nodes
 from example import get_github_repositories,clear_all_caches,run_cypher_any
+from example import delete_node_with_specific_id
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NODE_ID_ACCESSOR
 from flasgger import Swagger, swag_from
 
@@ -412,7 +413,7 @@ def api_create_node():
 def api_update_colors():
     data = request.get_json()
     db = get_db()
-    ppppp = update_color_of_all_nodes(db, data)
+    ppppp = update_color_of_all_nodes(db, data['color'])
     l(len(ppppp))
     # Save JSON data if needed...
     return {'message': 'success.'}, 200
@@ -523,9 +524,8 @@ def api_delete_node():
     l('delete_node', data)
     n = data['id']
     db = get_db()
-    # ppppp=delete_node(db, n)
-    return {'message': 'ok, no problem'}, 200
-
+    deleted = db.execute_write(delete_node_with_specific_id, n)
+    return {'message': f'Deleted {deleted} node(s).'}, 200
 # clear_all_caches
 @app.route('/api/v0/clear_all_caches', methods=['POST'])
 @swag_from({

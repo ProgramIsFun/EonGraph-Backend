@@ -6,9 +6,7 @@
 
 1
 
-
 # In[ ]:
-
 
 
 
@@ -19,12 +17,10 @@
 p=print
 import uuid
 
-
 # In[1]:
 
 
 from flask import jsonify
-
 
 # In[ ]:
 
@@ -32,12 +28,6 @@ from flask import jsonify
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN,NODE_ID_ACCESSOR
 
 AUTH = (NEO4J_USERNAME, NEO4J_PASSWORD)
-
-from neo4j import GraphDatabase
-
-driver_ = GraphDatabase.driver(NEO4J_URI, auth=AUTH)
-session = driver_.session(database=NEO4J_DATABASE)
-
 
 # ## Helper Functions
 # 
@@ -92,7 +82,6 @@ def clear_all_caches(cache_dir='.'):
     print(f"Deleted {deleted} cache files.")
     return deleted
 
-
 # In[ ]:
 
 
@@ -108,16 +97,13 @@ def run_cypher_any(session , query):
 
 
 
-
 # In[ ]:
 
 
 # example_query="MATCH (n)-[r]->(m) RETURN n, r, m"
 # a=run_cypher_any(session, example_query)
 
-
 # In[ ]:
-
 
 
 
@@ -127,18 +113,15 @@ def run_cypher_any(session , query):
 
 # jsonify(a)
 
-
 # In[ ]:
 
 
 # records = [record.data() for record in a]
 
-
 # In[ ]:
 
 
 # records[2]
-
 
 # In[ ]:
 
@@ -150,12 +133,10 @@ def run_cypher_any(session , query):
 # a=run_cypher_any(session, example_query)
 # a
 
-
 # In[ ]:
 
 
 # a.data()
-
 
 # In[ ]:
 
@@ -166,12 +147,10 @@ def get_all_node_and_their_connections(session):
 
 # k= session.execute_read(get_all_node_and_their_connections)
 
-
 # In[ ]:
 
 
 # k[0]["r"]
-
 
 # ## Basic information.
 
@@ -212,16 +191,15 @@ def get_github_repositories(cache_expiry=60000000000000):
         print(f"| {repo['name']} | {repo['full_name']} | {repo['private']} | {repo['html_url']} |")
     return repos
 
-
 # In[ ]:
 
 
 # a=get_github_repositories()
 
-
 # #### get_specific_node_with_specific_id
 
 # In[ ]:
+
 
 
 def get_record_with_specific_id(tx, id):
@@ -229,14 +207,13 @@ def get_record_with_specific_id(tx, id):
     query = f'''
 
     MATCH (n)
-        WHERE n.{NODE_ID_ACCESSOR} = "{id}"
+        WHERE n.{NODE_ID_ACCESSOR} = $id
         RETURN n
     '''
-    result = tx.run(query)
+    result = tx.run(query, id=id)
     return list(result)
 
 # k=session.execute_read(get_record_with_specific_id, id="9b6097ab-f834-4789-a542-ced4f9478cc5")
-
 
 # In[ ]:
 
@@ -257,7 +234,6 @@ def get_specific_node_with_specific_id(id):
     return nodes
 # get_specific_node_with_specific_id("9b6097ab-f834-4789-a542-ced4f9478cc5")
 
-
 # #### get_node_with_specific_property
 
 # In[ ]:
@@ -275,12 +251,10 @@ def get_node_with_specific_property(tx, property):
     return list(result)
 # k=session.execute_read(get_node_with_specific_property, property="ue_location_X")
 
-
 # In[29]:
 
 
 # len(k)
-
 
 # #### print_number_of_node_and_number_of_connections
 
@@ -304,12 +278,11 @@ def print_number_of_node_and_number_of_connections(session):
             print(record["total"])
     get_number_of_connections()
 
-
 # In[31]:
 
 
-# print_number_of_node_and_number_of_connections(session)
 
+# print_number_of_node_and_number_of_connections(session)
 
 # #### get_every_node
 
@@ -331,21 +304,17 @@ def get_every_node(tx):
 # ppp2.keys()
 # dict(ppp2)
 
-
 # In[ ]:
 
 
 # ppp2
-
 
 # In[ ]:
 
 
 # ppp2.element_id
 
-
 # In[ ]:
-
 
 
 
@@ -427,8 +396,8 @@ def get_all_nodes__and__their_connections(session):
 
 # get_all_nodes__and__their_connections(session)
 
-
 # In[ ]:
+
 
 
 # Get all connections
@@ -446,7 +415,6 @@ def get_all_connections():
 # r2=r1["r"]
 # r2.nodes
 
-
 # #### _get_constraints
 
 # In[38]:
@@ -459,13 +427,11 @@ def _get_constraints(tx):
         return [record for record in result]
 # k=session.execute_read(_get_constraints)
 
-
 # ## Editing things.
 
 # #### update_position_of_all_node
 
 # In[ ]:
-
 
 
 
@@ -477,13 +443,9 @@ def update_position_of_all_node(session,data,prefix):
 
     p("update_position_of_all_node called with data:", data)
 
-    required_props = [NODE_ID_ACCESSOR, "X", "Y", "Z"]
-
     output_data = []
+
     for item in data:
-        missing_props = [k for k in required_props if k not in item]
-        if missing_props:
-            raise ValueError(f"Missing required properties {missing_props} in item: {item}")
         # Add a new dictionary to output_data with the flattened structure.
         output_data.append({
             "ID": item[NODE_ID_ACCESSOR],
@@ -509,7 +471,7 @@ def update_position_of_all_node(session,data,prefix):
 
     updated_nodes = session.execute_write(update_nodes, output_data)
     return updated_nodes
-
+    
 
 
 
@@ -524,7 +486,6 @@ def update_position_of_all_node(session,data,prefix):
 #       }
 #     ]
 # a=update_position_of_all_node(session,d)
-
 
 # #### update_color_of_all_nodes
 # 
@@ -543,7 +504,6 @@ def update_color_of_all_nodes(session, color):
     result = session.run(query, color=color)
     return [record['n'] for record in result]
 
-
 # In[ ]:
 
 
@@ -551,10 +511,10 @@ def update_color_of_all_nodes(session, color):
 
 # a
 
-
 # ## Creating things.
 
 # In[ ]:
+
 
 
 def _create_constraint(tx, label, property):
@@ -580,7 +540,6 @@ def create_node_tx(tx, name, id8):
     record = result.single()
     return record["node_id"] if record else None
 
-
 # #### create_note_with_generate_id
 
 # In[ ]:
@@ -590,7 +549,6 @@ def create_node_with_generate_id(session, name):
     p("create_node_with_generate_id called with name:", name)
     node_id = session.execute_write(create_node_tx, name, str(uuid.uuid4()))
     return node_id
-
 
 # In[ ]:
 
@@ -610,7 +568,6 @@ def create_node_tx_with_position(tx, name, id8, x, y, z):
     record = result.single()
     return record["node_id"] if record else None
 
-
 # #### create_note_with_provided_position_with_generate_id
 
 # In[ ]:
@@ -620,7 +577,6 @@ def create_node_with_generate_id_and_position(session, name, x, y, z):
     p("create_node_with_generate_id_and_position called with name:", name, "x:", x, "y:", y, "z:", z)
     node_id = session.execute_write(create_node_tx_with_position, name, str(uuid.uuid4()), x, y, z)
     return node_id
-
 
 # In[ ]:
 
@@ -645,32 +601,28 @@ def testing_constraint(session):
 # node_id = create_node_with_generate_id(session, testing_name_777)
 # 
 
-
 # In[ ]:
 
 
 # testing_id_777
-
 
 # In[ ]:
 
 
 # node_id
 
-
 # In[ ]:
 
 
 # delete_note_with_specific_id(session, node_id)
-
 
 # In[29]:
 
 
 
 
-
 # In[ ]:
+
 
 
 def create_example_integrates(tx, name):
@@ -801,6 +753,7 @@ def create_example_integrates(tx, name):
 # In[ ]:
 
 
+
 def remove_all():
     p("remove_all called")
     session.run("MATCH (n) DETACH DELETE n")
@@ -828,7 +781,6 @@ def delete_node_with_specific_id(tx, id):
     record = result.single()
     return record["deletedCount"] if record else 0  # returns count of deleted nodes
 
-
 # #### delete_note_with_specific_idand_label
 
 # In[ ]:
@@ -848,15 +800,12 @@ def delete_node_with_specific_id_and_label(tx, label, id):
     record = result.single()
     return record["deletedCount"] if record else 0  # returns count of deleted nodes
 
-
 # In[ ]:
 
 
 # k=delete_note_with_specific_id_and_label(session, "NodeExample", "9b6097ab-f834-4789-a542-ced4f9478cc5")
 
-
 # In[ ]:
 
 
 # k
-
