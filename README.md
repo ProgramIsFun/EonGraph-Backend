@@ -36,13 +36,7 @@ $env:FLASK_APP="app.py"; $env:FLASK_ENV="development"; flask run --port=5007
 
 ## Development cycle
 
-`example.py` is auto-generated from `example.ipynb`. Do not edit `example.py` directly — all changes should be made in the notebook first, then converted to `.py` via the script below.
-
-| Step | Command                                               | Description                                  |
-|------|------------------------------------------------------|----------------------------------------------|
-| 1    | `pip install nbconvert`                              | Install nbconvert utility (one-time setup)   |
-| 2    | Edit `example.ipynb` in Jupyter / VS Code            | This is the source of truth                  |
-| 3    | `jupyter nbconvert example.ipynb --to python`        | Regenerate `example.py` from the notebook    |
+`example.py` is the source of truth. Edit it directly.
 
 ## How to Deploy
 
