@@ -1,6 +1,6 @@
+import logging
 import os
-import ast
-from dotenv import load_dotenv, find_dotenv
+
 from flask import Flask, g, request, render_template, jsonify
 from flask_cors import CORS
 from flask_json import FlaskJSON
@@ -8,52 +8,46 @@ from neo4j import GraphDatabase, basic_auth
 from example import get_all_nodes__and__their_connections
 from example import update_position_of_all_node
 from example import create_node_with_generate_id_and_position
-from example import get_specific_node_with_specific_id,update_color_of_all_nodes
-from example import get_github_repositories,clear_all_caches,run_cypher_any
+from example import get_specific_node_with_specific_id, update_color_of_all_nodes
+from example import get_github_repositories, clear_all_caches, run_cypher_any
 from example import delete_node_with_specific_id
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NODE_ID_ACCESSOR
 from flasgger import Swagger, swag_from
 
-def l(*args):
-    print(args)
-
-l("Loading environment variables for local development...")
-load_dotenv(find_dotenv())
-l("Environment variables loaded.")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
-l("Neo4j driver creating...")
+logger.info("Neo4j driver creating...")
 driver = GraphDatabase.driver(
     NEO4J_URI, auth=basic_auth(NEO4J_USERNAME, str(NEO4J_PASSWORD))
 )
-l("Neo4j driver created.")
+logger.info("Neo4j driver created.")
 
 
-l("check if node_id_accessor exist on all nodes, if any node does not have it, exit with error")
+logger.info("Checking if node_id_accessor exists on all nodes...")
 with driver.session() as session:
     result = session.run(
         f"MATCH (n) WHERE n.{NODE_ID_ACCESSOR} IS NULL RETURN count(n) AS count"
     )
     count = result.single().get("count", 0)
     if count > 0:
-        l(f"Error: There are {count} nodes without the '{NODE_ID_ACCESSOR}' property. Please ensure all nodes have this property.")
+        logger.error("There are %d nodes without the '%s' property.", count, NODE_ID_ACCESSOR)
         exit(1)
     else:
-        l(f"All nodes have the '{NODE_ID_ACCESSOR}' property. Check is complete. Moving on...")
+        logger.info("All nodes have the '%s' property.", NODE_ID_ACCESSOR)
 
 
 
-l("Flask app creating...")
+logger.info("Flask app creating...")
 app = Flask(__name__)
-l("Flask app created.")
+logger.info("Flask app created.")
 
-l("Enabling CORS...")
+logger.info("Enabling CORS...")
 CORS(app)
-l("CORS enabled.")
 
-l("Initializing FlaskJSON...")
+logger.info("Initializing FlaskJSON...")
 FlaskJSON(app)
-l("FlaskJSON initialized.")
 
 # Initialize Flasgger with your Flask app
 swagger = Swagger(app)
@@ -67,26 +61,13 @@ def handle_exception(e):
         "success": False,
         "error": str(e)
     }
-    l("returning error response:", response)
+    logger.error("Returning error response: %s", response)
     return jsonify(response), 500
-
-# --- ENVIRONMENT & CONFIG ---
-
-def env(key, default=None, required=True):
-    try:
-        value = os.environ[key]
-        return ast.literal_eval(value)
-    except (SyntaxError, ValueError):
-        return value
-    except KeyError:
-        if default or not required:
-            return default
-        raise RuntimeError(f"Missing required environment variable '{key}'")
 
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "super secret guy")
 ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN")
 if not ADMIN_TOKEN:
-    l("WARNING: ADMIN_TOKEN is not set. The /api/v0/run_any_cypher endpoint will be inaccessible.")
+    logger.warning("ADMIN_TOKEN is not set. The /api/v0/run_any_cypher endpoint will be inaccessible.")
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):
@@ -189,17 +170,14 @@ def api_run_any_cypher():
         return {'message': 'Unauthorized'}, 401
     db = get_db()
     data = request.get_json()
-    l('run_any_cypher', data)
+    logger.info('run_any_cypher %s', data)
     if not data or 'data' not in data:
         return {'message': 'No data provided'}, 400
     cypher_query = data['data']
     if cypher_query.strip() == "":
         return {'message': 'Empty cypher query'}, 400
-    result = run_cypher_any(db,cypher_query)
-    l("result", result)
-    jsonified= jsonify(result)
-    l("jsonified", jsonified)
-    return jsonified,200
+    result = run_cypher_any(db, cypher_query)
+    return jsonify(result), 200
 
 
 # read
@@ -248,13 +226,15 @@ def api_run_any_cypher():
 })
 def api_get_specific_node():
     data = request.get_json()
-    l('get_specific_node_with_specific_id', data)
+    if not data or 'nodeIdAccess' not in data:
+        return {'message': 'Missing required field: nodeIdAccess'}, 400
+    logger.info('get_specific_node_with_specific_id %s', data)
     node_id = data['nodeIdAccess']
     db = get_db()
     nodeObject = get_specific_node_with_specific_id(db, node_id)
     if not nodeObject:
         return {'message': 'Node not found'}, 404
-    return {'node': nodeObject}, 200
+    return jsonify({'node': nodeObject}), 200
 
 @app.route('/api/v0/return_all_nodes_and_their_connections_if_any', methods=['GET'])
 @swag_from({
@@ -276,12 +256,12 @@ def api_get_specific_node():
 })
 def api_get_all_nodes():
     try:
-        l("get_all_node_and_their_connections")
+        logger.info("get_all_nodes_and_their_connections")
         db = get_db()
-        oooo = get_all_nodes__and__their_connections(db)
-        return jsonify(oooo)
+        nodes_and_connections = get_all_nodes__and__their_connections(db)
+        return jsonify(nodes_and_connections)
     except Exception as e:
-        l('Error occurred while fetching nodes and connections:', str(e))
+        logger.error('Error fetching nodes and connections: %s', e)
         return {'message': 'Error occurred', 'error': str(e)}, 500
 
 
@@ -377,22 +357,18 @@ def api_get_all_github_repositories():
 })
 def api_create_node():
     data = request.get_json()
-    l('create_node 15355673', data)
-    n = data['name']
+    if not data:
+        return {'message': 'No data provided'}, 400
+    for field in ('name', 'locationX', 'locationY', 'locationZ'):
+        if field not in data:
+            return {'message': f'Missing required field: {field}'}, 400
+    logger.info('create_node %s', data)
+    name = data['name']
     db = get_db()
-    x = data['locationX']
-    y = data['locationY']
-    z = data['locationZ']
-    id_return = create_node_with_generate_id_and_position(db, n, x, y, z)
-    nodeObject = {
-        "id": id_return,
-        "name": n
-    }
-    return {
-            'message': 'success.',
-            'id': nodeObject['id'],
-            'name': nodeObject['name']
-            }, 200
+    node_id = create_node_with_generate_id_and_position(
+        db, name, data['locationX'], data['locationY'], data['locationZ']
+    )
+    return {'message': 'success.', 'id': node_id, 'name': name}, 200
 
 # update
 @app.route('/api/v0/update_color_of_all_nodes', methods=['POST'])
@@ -432,10 +408,11 @@ def api_create_node():
 })
 def api_update_colors():
     data = request.get_json()
+    if not data or 'color' not in data:
+        return {'message': 'Missing required field: color'}, 400
     db = get_db()
-    ppppp = update_color_of_all_nodes(db, data['color'])
-    l(len(ppppp))
-    # Save JSON data if needed...
+    updated_nodes = update_color_of_all_nodes(db, data['color'])
+    logger.info('Updated color on %d nodes', len(updated_nodes))
     return {'message': 'success.'}, 200
 
 @app.route('/api/v0/update_position_of_all_nodes', methods=['POST'])
@@ -487,12 +464,13 @@ def api_update_colors():
     }
 })
 def api_update_positions():
-    print("api_update_positions called")
     data = request.get_json()
-    data_points=data["data_points"]
-    l("data_points", data_points)
-    prefix=data["prefix"]
-    l("prefix", prefix)
+    if not data or 'data_points' not in data or 'prefix' not in data:
+        return {'message': 'Missing required fields: data_points, prefix'}, 400
+
+    data_points = data["data_points"]
+    prefix = data["prefix"]
+    logger.info("update_positions prefix=%s, points=%d", prefix, len(data_points))
 
     # only 'WebApp' is supported for now for prefix
     if prefix != "WebApp":
@@ -500,7 +478,7 @@ def api_update_positions():
 
     db = get_db()
     result = update_position_of_all_node(db, data_points, prefix)
-    l(len(result))
+    logger.info('Updated positions for %d nodes', len(result))
     return {'message': 'success.'}, 200
 
 # delete
@@ -541,7 +519,9 @@ def api_update_positions():
 })
 def api_delete_node():
     data = request.get_json()
-    l('delete_node', data)
+    if not data or 'id' not in data:
+        return {'message': 'Missing required field: id'}, 400
+    logger.info('delete_node %s', data)
     n = data['id']
     db = get_db()
     deleted = db.execute_write(delete_node_with_specific_id, n)

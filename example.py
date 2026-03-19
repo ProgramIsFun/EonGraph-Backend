@@ -239,13 +239,15 @@ def update_position_of_all_node(session, data, prefix):
     return updated_nodes
 
 def update_color_of_all_nodes(session, color):
-    query = '''
-    MATCH (n)
-    SET n.color = $color
-    RETURN n
-    '''
-    result = session.run(query, color=color)
-    return [record['n'] for record in result]
+    def _update_color(tx, color):
+        query = '''
+        MATCH (n)
+        SET n.color = $color
+        RETURN n
+        '''
+        result = tx.run(query, color=color)
+        return [record['n'] for record in result]
+    return session.execute_write(_update_color, color)
 
 
 # --- Create Operations ---
