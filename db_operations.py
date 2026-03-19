@@ -1,3 +1,4 @@
+import logging
 import os
 import json
 import time
@@ -11,7 +12,9 @@ from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE, GI
 
 AUTH = (NEO4J_USERNAME, NEO4J_PASSWORD)
 
-p = print
+logger = logging.getLogger(__name__)
+
+DEFAULT_NODE_LABEL = "normalNode"
 
 
 # --- Helper Functions ---
@@ -71,7 +74,7 @@ def run_cypher_any(session, query):
 # --- Read Operations ---
 
 def get_record_with_specific_id(tx, id):
-    p("get_record_with_specific_id called with id:", id)
+    logger.info("get_record_with_specific_id called with id: %s", id)
     query = f'''
     MATCH (n)
         WHERE n.{NODE_ID_ACCESSOR} = $id
@@ -81,7 +84,7 @@ def get_record_with_specific_id(tx, id):
     return list(result)
 
 def get_specific_node_with_specific_id(session, id):
-    p("get_specific_node_with_specific_id called with id:", id)
+    logger.info("get_specific_node_with_specific_id called with id: %s", id)
     k = session.execute_read(get_record_with_specific_id, id=id)
     nodes = []
     for record in k:
@@ -95,7 +98,7 @@ def get_specific_node_with_specific_id(session, id):
     return nodes
 
 def get_node_with_specific_property(tx, property):
-    p("get_node_with_specific_property called with property:", property)
+    logger.info("get_node_with_specific_property called with property: %s", property)
     query = f'''
     MATCH (n)
         WHERE n.`{property}` IS NOT NULL
@@ -105,7 +108,7 @@ def get_node_with_specific_property(tx, property):
     return list(result)
 
 def print_number_of_node_and_number_of_connections(session):
-    p("print_number_of_node_and_number_of_connections called")
+    logger.info("print_number_of_node_and_number_of_connections called")
     def get_number_of_nodes():
         result = session.run("MATCH (n) RETURN count(n) as total")
         for record in result:
@@ -119,11 +122,11 @@ def print_number_of_node_and_number_of_connections(session):
     get_number_of_connections()
 
 def get_every_node(tx):
-    p("get_every_node called")
+    logger.info("get_every_node called")
     return list(tx.run('MATCH (n) RETURN n'))
 
 def get_all_nodes__and__their_connections(session):
-    p("get_all_nodes__and__their_connections called")
+    logger.info("get_all_nodes__and__their_connections called")
     def get_all_node_and_their_connections(session):
         result = session.run("MATCH (n)-[r]->(m) RETURN n, r, m")
         return list(result)
@@ -147,8 +150,7 @@ def get_all_nodes__and__their_connections(session):
 
         links.append({"source": NID, "target": MID})
 
-    p(len(nodes))
-    p(len(links))
+    logger.info("Found %d nodes and %d links", len(nodes), len(links))
 
     def get_alone_nodes(session):
         result = session.run('''
@@ -169,12 +171,12 @@ def get_all_nodes__and__their_connections(session):
     return {"nodes": nodes, "links": links}
 
 def get_all_connections(session):
-    p("get_all_connections called")
+    logger.info("get_all_connections called")
     result = session.run("MATCH ()-[r]->() RETURN r")
     return list(result)
 
 def _get_constraints(tx):
-    p("_get_constraints called")
+    logger.info("_get_constraints called")
     query = "SHOW CONSTRAINTS"
     result = tx.run(query)
     return [record for record in result]
@@ -187,7 +189,7 @@ def get_github_repositories(cache_expiry=3600):
     CACHE_KEY = 'github_user_repos_v1'
     repos = load_cache_generic(CACHE_KEY, expiry_seconds=cache_expiry)
     if repos is not None:
-        print("Loaded from cache")
+        logger.info("Loaded GitHub repos from cache")
     else:
         url = "https://api.github.com/user/repos"
         headers = {"Authorization": f"token {GITHUB_TOKEN}"}
@@ -196,7 +198,7 @@ def get_github_repositories(cache_expiry=3600):
         while True:
             response = requests.get(url, headers=headers, params={'per_page': 100, 'page': page})
             if response.status_code != 200:
-                print(f"Error {response.status_code}: {response.text}")
+                logger.error("GitHub API error %d: %s", response.status_code, response.text)
                 break
             data = response.json()
             if not data:
@@ -205,17 +207,14 @@ def get_github_repositories(cache_expiry=3600):
             page += 1
         save_cache_generic(CACHE_KEY, repos)
 
-    print("| Name | Full Name | Private | HTML URL |")
-    print("|------|-----------|---------|----------|")
-    for repo in repos:
-        print(f"| {repo['name']} | {repo['full_name']} | {repo['private']} | {repo['html_url']} |")
+    logger.info("Fetched %d GitHub repositories", len(repos))
     return repos
 
 
 # --- Write Operations ---
 
 def update_position_of_all_node(session, data, prefix):
-    p("update_position_of_all_node called with data:", data)
+    logger.info("update_position_of_all_node called with %d data points", len(data))
 
     output_data = []
     for item in data:
@@ -258,14 +257,14 @@ def update_color_of_all_nodes(session, color):
 # --- Create Operations ---
 
 def _create_constraint(tx, label, property):
-    p("_create_constraint called with label:", label, "and property:", property)
+    logger.info("_create_constraint called with label: %s, property: %s", label, property)
     query = f"CREATE CONSTRAINT FOR  (n:{label}) REQUIRE  n.{property} IS UNIQUE"
     tx.run(query)
 
 def create_node_tx(tx, name, id8):
-    print("create_node_tx called with name:", name, "and id8:", id8)
+    logger.info("create_node_tx called with name: %s", name)
     query = (
-        f"CREATE (n:normalNode588888888 {{"
+        f"CREATE (n:{DEFAULT_NODE_LABEL} {{"
         f"name: $name, "
         f"{NODE_ID_ACCESSOR}: $id8}}) "
         f"RETURN n.{NODE_ID_ACCESSOR} AS node_id"
@@ -275,14 +274,14 @@ def create_node_tx(tx, name, id8):
     return record["node_id"] if record else None
 
 def create_node_with_generate_id(session, name):
-    p("create_node_with_generate_id called with name:", name)
+    logger.info("create_node_with_generate_id called with name: %s", name)
     node_id = session.execute_write(create_node_tx, name, str(uuid.uuid4()))
     return node_id
 
 def create_node_tx_with_position(tx, name, id8, x, y, z):
-    print("create_node_tx_with_position called with name:", name, "id8:", id8, "x:", x, "y:", y, "z:", z)
+    logger.info("create_node_tx_with_position called with name: %s", name)
     query = (
-        f"CREATE (n:normalNode588888888 {{"
+        f"CREATE (n:{DEFAULT_NODE_LABEL} {{"
         f"name: $name, "
         f"{NODE_ID_ACCESSOR}: $id8, "
         f"ue_location_X: $x, "
@@ -295,7 +294,7 @@ def create_node_tx_with_position(tx, name, id8, x, y, z):
     return record["node_id"] if record else None
 
 def create_node_with_generate_id_and_position(session, name, x, y, z):
-    p("create_node_with_generate_id_and_position called with name:", name, "x:", x, "y:", y, "z:", z)
+    logger.info("create_node_with_generate_id_and_position called with name: %s", name)
     node_id = session.execute_write(create_node_tx_with_position, name, str(uuid.uuid4()), x, y, z)
     return node_id
 
@@ -303,11 +302,11 @@ def create_node_with_generate_id_and_position(session, name, x, y, z):
 # --- Delete Operations ---
 
 def remove_all(session):
-    p("remove_all called")
+    logger.warning("remove_all called — deleting all nodes")
     session.run("MATCH (n) DETACH DELETE n")
 
 def delete_node_with_specific_id(tx, id):
-    print("delete_node_with_specific_id called with id:", id)
+    logger.info("delete_node_with_specific_id called with id: %s", id)
     query = (
         f'''
         MATCH (n)
@@ -321,7 +320,7 @@ def delete_node_with_specific_id(tx, id):
     return record["deletedCount"] if record else 0
 
 def delete_node_with_specific_id_and_label(tx, label, id):
-    print("delete_node_with_specific_id_and_label called with label:", label, "and id:", id)
+    logger.info("delete_node_with_specific_id_and_label called with label: %s, id: %s", label, id)
     query = (
         f'''
         MATCH (n:{label})
