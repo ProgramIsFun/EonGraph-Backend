@@ -231,7 +231,8 @@ def api_get_specific_node():
     data = request.get_json()
     l('get_specific_node_with_specific_id', data)
     node_id = data['nodeIdAccess']
-    nodeObject = get_specific_node_with_specific_id(node_id)
+    db = get_db()
+    nodeObject = get_specific_node_with_specific_id(db, node_id)
     if not nodeObject:
         return {'message': 'Node not found'}, 404
     return {'node': nodeObject}, 200

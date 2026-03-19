@@ -1,44 +1,20 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-1
-
-# In[ ]:
-
-
-
-
-# In[2]:
-
-
-p=print
-import uuid
-
-# In[1]:
-
-
-from flask import jsonify
-
-# In[ ]:
-
-
-from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE,GITHUB_TOKEN,NODE_ID_ACCESSOR
-
-AUTH = (NEO4J_USERNAME, NEO4J_PASSWORD)
-
-# ## Helper Functions
-# 
-
-# In[ ]:
-
-
 import os
 import json
 import time
 import hashlib
+import glob
+import uuid
+
+import requests
+
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_DATABASE, GITHUB_TOKEN, NODE_ID_ACCESSOR
+
+AUTH = (NEO4J_USERNAME, NEO4J_PASSWORD)
+
+p = print
+
+
+# --- Helper Functions ---
 
 def get_cache_filename(key: str, cache_dir='.', ext='json'):
     """Generate filename from key (namespace for cache)."""
@@ -66,9 +42,6 @@ def save_cache_generic(key, data, cache_dir='.'):
     with open(fn, 'w', encoding='utf-8') as f:
         json.dump(cache, f)
 
-import os
-import glob
-
 def clear_all_caches(cache_dir='.'):
     """Remove all cache files created by the generic cache system."""
     pattern = os.path.join(cache_dir, 'cache_*.json')
@@ -82,88 +55,131 @@ def clear_all_caches(cache_dir='.'):
     print(f"Deleted {deleted} cache files.")
     return deleted
 
-# In[ ]:
 
+# --- Cypher Helpers ---
 
-# return  <neo4j._sync.work.result.Result object at XXXXXXXXXX>
-def run_cypher_any(session , query):  
-    '''if MATCH (n)-[r]->(m) RETURN n, r, m,  the r will contains both node fields '''
-    result= session.run(query)
+def run_cypher_any(session, query):
+    """Run arbitrary Cypher query. Returns list of dicts."""
+    result = session.run(query)
     return result.data()
 
 
-# In[ ]:
+# --- Read Operations ---
 
+def get_record_with_specific_id(tx, id):
+    p("get_record_with_specific_id called with id:", id)
+    query = f'''
+    MATCH (n)
+        WHERE n.{NODE_ID_ACCESSOR} = $id
+        RETURN n
+    '''
+    result = tx.run(query, id=id)
+    return list(result)
 
+def get_specific_node_with_specific_id(session, id):
+    p("get_specific_node_with_specific_id called with id:", id)
+    k = session.execute_read(get_record_with_specific_id, id=id)
+    nodes = []
+    for record in k:
+        node = record['n']
+        node_dict = dict(node)
+        label_list = list(node.labels)
+        nodes.append({
+            "properties": node_dict,
+            "labels": label_list
+        })
+    return nodes
 
+def get_node_with_specific_property(tx, property):
+    p("get_node_with_specific_property called with property:", property)
+    query = f'''
+    MATCH (n)
+        WHERE n.`{property}` IS NOT NULL
+        RETURN n
+    '''
+    result = tx.run(query)
+    return list(result)
 
-# In[ ]:
+def print_number_of_node_and_number_of_connections(session):
+    p("print_number_of_node_and_number_of_connections called")
+    def get_number_of_nodes():
+        result = session.run("MATCH (n) RETURN count(n) as total")
+        for record in result:
+            print(record["total"])
+    get_number_of_nodes()
 
+    def get_number_of_connections():
+        result = session.run("MATCH ()-->() RETURN count(*) as total")
+        for record in result:
+            print(record["total"])
+    get_number_of_connections()
 
-# example_query="MATCH (n)-[r]->(m) RETURN n, r, m"
-# a=run_cypher_any(session, example_query)
+def get_every_node(tx):
+    p("get_every_node called")
+    return list(tx.run('MATCH (n) RETURN n'))
 
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-# jsonify(a)
-
-# In[ ]:
-
-
-# records = [record.data() for record in a]
-
-# In[ ]:
-
-
-# records[2]
-
-# In[ ]:
-
-
-# example_query='''MATCH (n {user_generate_id_7577777777: '9b6097ab-f834-4789-a542-ced4f9478cc5'})
-# SET n.custom123 = "hello world"
-# RETURN n
-# '''
-# a=run_cypher_any(session, example_query)
-# a
-
-# In[ ]:
-
-
-# a.data()
-
-# In[ ]:
-
-
-def get_all_node_and_their_connections(session):
+def get_all_nodes__and__their_connections(session):
+    p("get_all_nodes__and__their_connections called")
+    def get_all_node_and_their_connections(session):
         result = session.run("MATCH (n)-[r]->(m) RETURN n, r, m")
         return list(result)
 
-# k= session.execute_read(get_all_node_and_their_connections)
+    k = session.execute_read(get_all_node_and_their_connections)
+    nodes = []
+    nodesid = {}
+    links = []
+    for i in k:
+        n = i["n"]
+        m = i["m"]
 
-# In[ ]:
+        NID = dict(n)[NODE_ID_ACCESSOR]
+        MID = dict(m)[NODE_ID_ACCESSOR]
+        if NID not in nodesid:
+            nodesid[NID] = 1
+            nodes.append(dict(n))
+        if MID not in nodesid:
+            nodesid[MID] = 1
+            nodes.append(dict(m))
+
+        links.append({"source": NID, "target": MID})
+
+    p(len(nodes))
+    p(len(links))
+
+    def get_alone_nodes(session):
+        result = session.run('''
+        MATCH (n)
+        WHERE NOT EXISTS ((n)--())
+        RETURN n
+        ''')
+        return list(result)
+
+    k = session.execute_read(get_alone_nodes)
+    for i in k:
+        n = i["n"]
+        NID = dict(n)[NODE_ID_ACCESSOR]
+        if NID not in nodesid:
+            nodesid[NID] = 1
+            nodes.append(dict(n))
+
+    return {"nodes": nodes, "links": links}
+
+def get_all_connections(session):
+    p("get_all_connections called")
+    result = session.run("MATCH ()-[r]->() RETURN r")
+    return list(result)
+
+def _get_constraints(tx):
+    p("_get_constraints called")
+    query = "SHOW CONSTRAINTS"
+    result = tx.run(query)
+    return [record for record in result]
 
 
-# k[0]["r"]
-
-# ## Basic information.
-
-# #### get_github_repositories
-# 
-
-# In[ ]:
-
-
-import requests
+# --- GitHub ---
 
 def get_github_repositories(cache_expiry=60000000000000):
-    CACHE_KEY = 'github_user_repos_v1'   # Can be made more specific e.g. by username
+    CACHE_KEY = 'github_user_repos_v1'
     repos = load_cache_generic(CACHE_KEY, expiry_seconds=cache_expiry)
     if repos is not None:
         print("Loaded from cache")
@@ -184,269 +200,20 @@ def get_github_repositories(cache_expiry=60000000000000):
             page += 1
         save_cache_generic(CACHE_KEY, repos)
 
-    # Markdown table output
     print("| Name | Full Name | Private | HTML URL |")
     print("|------|-----------|---------|----------|")
     for repo in repos:
         print(f"| {repo['name']} | {repo['full_name']} | {repo['private']} | {repo['html_url']} |")
     return repos
 
-# In[ ]:
 
+# --- Write Operations ---
 
-# a=get_github_repositories()
-
-# #### get_specific_node_with_specific_id
-
-# In[ ]:
-
-
-
-def get_record_with_specific_id(tx, id):
-    p("get_record_with_specific_id called with id:", id)
-    query = f'''
-
-    MATCH (n)
-        WHERE n.{NODE_ID_ACCESSOR} = $id
-        RETURN n
-    '''
-    result = tx.run(query, id=id)
-    return list(result)
-
-# k=session.execute_read(get_record_with_specific_id, id="9b6097ab-f834-4789-a542-ced4f9478cc5")
-
-# In[ ]:
-
-
-def get_specific_node_with_specific_id(id):
-    p("get_specific_node_with_specific_id called with id:", id)
-    k=session.execute_read(get_record_with_specific_id, id=id)
-    nodes = []
-    for record in k:
-        node = record['n']
-        node_dict = dict(node)  # properties as dict
-        label_list = list(node.labels)  # labels as list
-        # Gather everything into one dict
-        nodes.append({
-            "properties": node_dict,
-            "labels": label_list
-        })
-    return nodes
-# get_specific_node_with_specific_id("9b6097ab-f834-4789-a542-ced4f9478cc5")
-
-# #### get_node_with_specific_property
-
-# In[ ]:
-
-
-def get_node_with_specific_property(tx, property):
-    p("get_node_with_specific_property called with property:", property)
-    query = f'''
-
-    MATCH (n)
-        WHERE n.`{property}` IS NOT NULL
-        RETURN n
-    '''
-    result = tx.run(query)
-    return list(result)
-# k=session.execute_read(get_node_with_specific_property, property="ue_location_X")
-
-# In[29]:
-
-
-# len(k)
-
-# #### print_number_of_node_and_number_of_connections
-
-# In[ ]:
-
-
-def print_number_of_node_and_number_of_connections(session):
-    p("print_number_of_node_and_number_of_connections called")
-    # Get total number of node in the database.
-    def get_number_of_nodes():
-        result = session.run("MATCH (n) RETURN count(n) as total")
-        for record in result:
-            print(record["total"])
-    get_number_of_nodes()
-
-
-    # Get number of connections.
-    def get_number_of_connections():
-        result = session.run("MATCH ()-->() RETURN count(*) as total")
-        for record in result:
-            print(record["total"])
-    get_number_of_connections()
-
-# In[31]:
-
-
-
-# print_number_of_node_and_number_of_connections(session)
-
-# #### get_every_node
-
-# In[ ]:
-
-
-def get_every_node(tx):
-    p("get_every_node called")
-    return list(tx.run(
-        '''
-        MATCH (n) RETURN n
-
-        '''
-    ))
-# result = session.execute_read(get_every_node)
-# ppp=result[0]
-# ppp2=ppp["n"]
-# type(ppp2)
-# ppp2.keys()
-# dict(ppp2)
-
-# In[ ]:
-
-
-# ppp2
-
-# In[ ]:
-
-
-# ppp2.element_id
-
-# In[ ]:
-
-
-
-
-# #### get_all_nodes__and__their_connections
-
-# In[ ]:
-
-
-def get_all_nodes__and__their_connections(session):
-    p("get_all_nodes__and__their_connections called")
-    def get_all_node_and_their_connections(session):
-        result = session.run("MATCH (n)-[r]->(m) RETURN n, r, m")
-        return list(result)
-
-    k= session.execute_read(get_all_node_and_their_connections)
-    len(k)
-    k2=k[0]
-    k2.keys()
-    nodes=[]
-    nodesid={}
-    links=[]
-    for i in k:
-        n=i["n"]
-        m=i["m"]
-
-        NID=dict(n)[NODE_ID_ACCESSOR]
-        Ninternal_id=n.element_id
-        MID=dict(m)[NODE_ID_ACCESSOR]
-        Minternal_id=m.element_id
-        if NID not in nodesid:
-            nodesid[NID]=1
-            kkkk=dict(n)
-            # kkkk["element_id"]=n.element_id
-            nodes.append(kkkk)
-        if MID not in nodesid:
-            nodesid[MID]=1
-            kkkk=dict(m)
-            # kkkk["element_id"]=m.element_id
-            nodes.append(kkkk)
-
-        links.append({"source":
-
-                          NID,
-                      "target":
-                            MID,
-                      }
-                        )
-
-
-    p(len(nodes))
-    p(len(links))
-
-    def get_alone_nodes(session):
-        result = session.run('''
-        MATCH (n)
-        WHERE NOT EXISTS ((n)--())
-        RETURN n
-        ''')
-        return list(result)
-
-    k=session.execute_read(get_alone_nodes)
-    for i in k:
-        n=i["n"]
-        NID=dict(n)[NODE_ID_ACCESSOR]
-        if NID not in nodesid:
-            nodesid[NID]=1
-            kkkk=dict(n)
-            # kkkk["element_id"]=n.element_id
-            nodes.append(kkkk)
-
-    oooo={"nodes":nodes, "links":links}
-    len(nodes)
-    return oooo
-
-
-# In[ ]:
-
-
-# get_all_nodes__and__their_connections(session)
-
-# In[ ]:
-
-
-
-# Get all connections
-def get_all_connections():
-    p("get_all_connections called")
-    result = session.run(""
-                         "MATCH ()-[r]->() RETURN r"
-                         ""
-                         ""
-                         ""
-                         "")
-    return list(result)
-# r=get_all_connections()
-# r1=r[0]
-# r2=r1["r"]
-# r2.nodes
-
-# #### _get_constraints
-
-# In[38]:
-
-
-def _get_constraints(tx):
-        p("_get_constraints called")
-        query = "SHOW CONSTRAINTS"
-        result = tx.run(query)
-        return [record for record in result]
-# k=session.execute_read(_get_constraints)
-
-# ## Editing things.
-
-# #### update_position_of_all_node
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-def update_position_of_all_node(session,data,prefix):
-
+def update_position_of_all_node(session, data, prefix):
     p("update_position_of_all_node called with data:", data)
 
     output_data = []
-
     for item in data:
-        # Add a new dictionary to output_data with the flattened structure.
         output_data.append({
             "ID": item[NODE_ID_ACCESSOR],
             "X": item["X"],
@@ -468,34 +235,10 @@ def update_position_of_all_node(session,data,prefix):
         result = tx.run(query, data=data)
         return list(result)
 
-
     updated_nodes = session.execute_write(update_nodes, output_data)
     return updated_nodes
-    
-
-
-
-# d=[
-#       {
-#         "ID": "9b6097ab-f834-4789-a542-ced4f9478cc5",
-#         "unreal_engine_location_728": {
-#           "X": -1056.2984697348495,
-#           "Y": -188.69419245425595,
-#           "Z": 535.1348803507144
-#         }
-#       }
-#     ]
-# a=update_position_of_all_node(session,d)
-
-# #### update_color_of_all_nodes
-# 
-# 
-
-# In[2]:
-
 
 def update_color_of_all_nodes(session, color):
-    # Implement the logic to update the color of all nodes in the database
     query = '''
     MATCH (n)
     SET n.color = $color
@@ -504,29 +247,13 @@ def update_color_of_all_nodes(session, color):
     result = session.run(query, color=color)
     return [record['n'] for record in result]
 
-# In[ ]:
 
-
-# a=update_color_of_all_nodes(session, "#FFFFFF")
-
-# a
-
-# ## Creating things.
-
-# In[ ]:
-
-
+# --- Create Operations ---
 
 def _create_constraint(tx, label, property):
     p("_create_constraint called with label:", label, "and property:", property)
     query = f"CREATE CONSTRAINT FOR  (n:{label}) REQUIRE  n.{property} IS UNIQUE"
     tx.run(query)
-# session.execute_write(_create_constraint, "normalNode588888888", "user_generate_id_7577777777")
-
-
-
-# In[ ]:
-
 
 def create_node_tx(tx, name, id8):
     print("create_node_tx called with name:", name, "and id8:", id8)
@@ -540,18 +267,10 @@ def create_node_tx(tx, name, id8):
     record = result.single()
     return record["node_id"] if record else None
 
-# #### create_note_with_generate_id
-
-# In[ ]:
-
-
 def create_node_with_generate_id(session, name):
     p("create_node_with_generate_id called with name:", name)
     node_id = session.execute_write(create_node_tx, name, str(uuid.uuid4()))
     return node_id
-
-# In[ ]:
-
 
 def create_node_tx_with_position(tx, name, id8, x, y, z):
     print("create_node_tx_with_position called with name:", name, "id8:", id8, "x:", x, "y:", y, "z:", z)
@@ -568,204 +287,17 @@ def create_node_tx_with_position(tx, name, id8, x, y, z):
     record = result.single()
     return record["node_id"] if record else None
 
-# #### create_note_with_provided_position_with_generate_id
-
-# In[ ]:
-
-
 def create_node_with_generate_id_and_position(session, name, x, y, z):
     p("create_node_with_generate_id_and_position called with name:", name, "x:", x, "y:", y, "z:", z)
     node_id = session.execute_write(create_node_tx_with_position, name, str(uuid.uuid4()), x, y, z)
     return node_id
 
-# In[ ]:
 
+# --- Delete Operations ---
 
-already_exists_id="9b6097ab-f834-4789-a542-ced4f9478cc5"
-def testing_constraint(session):
-    p("testing_constraint called")
-    node_id = session.execute_write(create_node_tx, "1", already_exists_id)
-    return node_id
-# k=testing_constraint(session)
-
-
-# In[ ]:
-
-
-# testing_name_777="to_be_deleted"
-
-
-# In[ ]:
-
-
-# node_id = create_node_with_generate_id(session, testing_name_777)
-# 
-
-# In[ ]:
-
-
-# testing_id_777
-
-# In[ ]:
-
-
-# node_id
-
-# In[ ]:
-
-
-# delete_note_with_specific_id(session, node_id)
-
-# In[29]:
-
-
-
-
-# In[ ]:
-
-
-
-def create_example_integrates(tx, name):
-    p("create_example_integrates called with name:", name)
-    def a1():
-
-        # https://neo4j.com/docs/api/python-driver/current/api.html#neo4j.Session.execute_write
-        def create_node_tx(tx, name):
-            query = ("CREATE (n:NodeExample {"
-                     "name: $name, "
-                     "id: randomUUID()}) "
-                     "RETURN n.id AS node_id")
-            result = tx.run(query, name=name)
-            record = result.single()
-            return record["node_id"]
-        node_id = session.execute_write(create_node_tx, "Bob")
-
-
-    def a2():
-        # https://neo4j.com/docs/api/python-driver/current/api.html#auto-commit-transactions
-        def create_person(driver, name):
-            # default_access_mode defaults to WRITE_ACCESS
-            with driver.session(database="neo4j") as session:
-                query = ("CREATE (n:NodeExample {name: $name, id: randomUUID()}) "
-                         "RETURN n.id AS node_id")
-                result = session.run(query, name=name)
-                record = result.single()
-                return record["node_id"]
-
-    def a3():
-        def create_and_return_node(tx, node):
-            query = (
-                "CREATE (n:Character "
-                "{"
-                "id: $id, "
-                "group: $group, "
-                "indexColor: $indexColor, "
-                "bckgDimensions: $bckgDimensions, "
-                "index: $index"
-                "}"
-                ")"
-                "RETURN n"
-            )
-            result = tx.run(query,
-                            id=node["id"],
-                            group=node["group"],
-                            indexColor=node["__indexColor"],
-                            bckgDimensions=node["__bckgDimensions"],
-                            index=node["index"])
-            return result.single()[0]  # Return the created node
-
-
-        node = {
-            "id": "Cosette",
-            "group": 5,
-            "__indexColor": "#5003bc",
-            "__bckgDimensions": [73.80274419464577, 24.2995279120152],
-            "index": 26
-        }
-
-        node_id = session.execute_write(create_and_return_node, node)
-
-    def a4():
-        employee_threshold = 10
-
-
-        def example():
-            for i in range(100):
-                name = f"Thor{i}"
-                org_id = session.execute_write(employ_person_tx, name)
-                print(f"User {name} added to organization {org_id}")
-
-
-        def employ_person_tx(tx, name):
-            # Create new Person node with given name, if not exists already
-            result = tx.run("""
-                MERGE (p:Person {name: $name})
-                RETURN p.name AS name
-                """, name=name
-                            )
-
-            # Obtain most recent organization ID and the number of people linked to it
-            result = tx.run("""
-                MATCH (o:Organization)
-                RETURN o.id AS id, COUNT{(p:Person)-[r:WORKS_FOR]->(o)} AS employees_n
-                ORDER BY o.created_date DESC
-                LIMIT 1
-            """)
-            org = result.single()
-
-            if org is not None and org["employees_n"] == 0:
-                print("Most recent organization is empty.")
-
-                raise Exception("Most recent organization is empty.")
-                # Transaction will roll back -> not even Person is created!
-            # If org does not have too many employees, add this Person to that
-            if org is not None and org.get("employees_n") < employee_threshold:
-                result = tx.run("""
-                    MATCH (o:Organization {id: $org_id})
-                    MATCH (p:Person {name: $name})
-                    MERGE (p)-[r:WORKS_FOR]->(o)
-                    RETURN $org_id AS id
-                    """, org_id=org["id"], name=name
-                                )
-                print(f"Added {name} to existing organization {org['id']}")
-
-            # Otherwise, create a new Organization and link Person to it
-            else:
-                result = tx.run("""
-                    MATCH (p:Person {name: $name})
-                    CREATE (o:Organization {id: randomuuid(), created_date: datetime()})
-                    MERGE (p)-[r:WORKS_FOR]->(o)
-                    RETURN o.id AS id
-                    """, name=name
-                                )
-                print(f"Created new organization and added {name} to it")
-
-            # Return the Organization ID to which the new Person ends up in
-            return result.single()["id"]
-
-
-
-
-# ## Removing things
-
-# #### remove_all
-
-# In[ ]:
-
-
-
-def remove_all():
+def remove_all(session):
     p("remove_all called")
     session.run("MATCH (n) DETACH DELETE n")
-
-# remove_all()
-
-
-# #### delete_note_with_specific_id
-# 
-
-# In[ ]:
-
 
 def delete_node_with_specific_id(tx, id):
     print("delete_node_with_specific_id called with id:", id)
@@ -779,12 +311,7 @@ def delete_node_with_specific_id(tx, id):
     )
     result = tx.run(query, id=id)
     record = result.single()
-    return record["deletedCount"] if record else 0  # returns count of deleted nodes
-
-# #### delete_note_with_specific_idand_label
-
-# In[ ]:
-
+    return record["deletedCount"] if record else 0
 
 def delete_node_with_specific_id_and_label(tx, label, id):
     print("delete_node_with_specific_id_and_label called with label:", label, "and id:", id)
@@ -798,14 +325,4 @@ def delete_node_with_specific_id_and_label(tx, label, id):
     )
     result = tx.run(query, id=id)
     record = result.single()
-    return record["deletedCount"] if record else 0  # returns count of deleted nodes
-
-# In[ ]:
-
-
-# k=delete_note_with_specific_id_and_label(session, "NodeExample", "9b6097ab-f834-4789-a542-ced4f9478cc5")
-
-# In[ ]:
-
-
-# k
+    return record["deletedCount"] if record else 0
