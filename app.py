@@ -82,7 +82,7 @@ def env(key, default=None, required=True):
             return default
         raise RuntimeError(f"Missing required environment variable '{key}'")
 
-app.config['SECRET_KEY'] = "super secret guy"
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "super secret guy")
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):
